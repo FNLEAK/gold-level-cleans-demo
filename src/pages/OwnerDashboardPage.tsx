@@ -31,8 +31,6 @@ import {
   type OwnerDashboard,
 } from '../lib/api'
 
-const easeOut = [0.22, 1, 0.36, 1] as const
-
 type Tab = 'upcoming' | 'week' | 'all'
 
 const serviceOptions = pricingTiers.filter((t) => !t.addon).map((t) => t.name)
@@ -416,12 +414,7 @@ export function OwnerDashboardPage() {
         aria-hidden
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 12 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.45, ease: easeOut }}
-        className="relative mx-auto w-full max-w-6xl"
-      >
+      <div className="relative mx-auto w-full max-w-6xl">
         <div
           className="relative overflow-hidden rounded-3xl border border-gold-400/20 bg-gradient-to-br from-gold-muted/30 via-void-200/90 to-void-200/50 p-6 shadow-[0_24px_80px_-24px_rgba(0,0,0,0.8)] backdrop-blur-xl sm:p-8"
         >
@@ -605,7 +598,7 @@ export function OwnerDashboardPage() {
             </button>
           </div>
         ) : null}
-      </motion.div>
+      </div>
     </section>
   )
 }

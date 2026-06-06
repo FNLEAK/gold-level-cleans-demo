@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
+import { ErrorBoundary } from './components/ErrorBoundary'
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { DashboardShell } from './layouts/DashboardShell'
 import { Layout } from './layouts/Layout'
@@ -43,7 +44,9 @@ function App() {
         element={
           <ProtectedRoute role="owner">
             <DashboardShell>
-              <OwnerDashboardPage />
+              <ErrorBoundary title="Owner dashboard error">
+                <OwnerDashboardPage />
+              </ErrorBoundary>
             </DashboardShell>
           </ProtectedRoute>
         }

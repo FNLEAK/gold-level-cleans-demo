@@ -190,23 +190,40 @@ export async function getCustomerDashboard() {
   return parseJson<CustomerDashboard>(res)
 }
 
+function normalizeWeek(raw: unknown): OwnerDashboard['week'] {
+  if (raw && typeof raw === 'object' && 'label' in raw) {
+    const w = raw as { start?: string; end?: string; label?: string }
+    return {
+      start: w.start ?? '',
+      end: w.end ?? '',
+      label: w.label ?? 'This week',
+    }
+  }
+  if (typeof raw === 'string' && raw.trim()) {
+    return { start: '', end: '', label: raw }
+  }
+  return { start: '', end: '', label: 'This week' }
+}
+
 export async function getOwnerDashboard() {
   const res = await fetch('/api/owner/dashboard', { headers: { ...authHeaders() } })
-  const raw = await parseJson<Partial<OwnerDashboard>>(res)
-  const upcoming = raw.upcomingBookings ?? []
-  const week = raw.bookingsThisWeek ?? []
-  const all = raw.allBookings ?? [...(raw.bookingsThisWeek ?? []), ...upcoming]
+  const raw = await parseJson<Partial<OwnerDashboard> & { week?: unknown }>(res)
+  const upcoming = Array.isArray(raw.upcomingBookings) ? raw.upcomingBookings : []
+  const weekBookings = Array.isArray(raw.bookingsThisWeek) ? raw.bookingsThisWeek : []
+  const all = Array.isArray(raw.allBookings)
+    ? raw.allBookings
+    : [...weekBookings, ...upcoming]
   const today = new Date().toISOString().slice(0, 10)
 
   return {
     onlineUsers: raw.onlineUsers ?? 0,
-    onlineSessions: raw.onlineSessions ?? [],
-    week: raw.week ?? { start: '', end: '', label: 'This week' },
+    onlineSessions: Array.isArray(raw.onlineSessions) ? raw.onlineSessions : [],
+    week: normalizeWeek(raw.week),
     weekKey: raw.weekKey ?? '',
     cap: raw.cap ?? WEEKLY_BOOKING_CAP,
-    bookedThisWeek: raw.bookedThisWeek ?? week.length,
+    bookedThisWeek: raw.bookedThisWeek ?? weekBookings.length,
     remainingThisWeek: raw.remainingThisWeek ?? 0,
-    bookingsThisWeek: week,
+    bookingsThisWeek: weekBookings,
     upcomingBookings: upcoming,
     allBookings: all,
     totalActiveBookings: raw.totalActiveBookings ?? upcoming.length,
