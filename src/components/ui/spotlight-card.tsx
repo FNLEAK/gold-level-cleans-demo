@@ -150,9 +150,9 @@ export function GlowBorder({
     <div
       data-glow-border
       style={glowVars(glowColor)}
-      className={`rounded-2xl ${className}`.trim()}
+      className={`overflow-hidden rounded-2xl ${className}`.trim()}
     >
-      <div className="relative z-[3] h-full w-full rounded-[inherit]">{children}</div>
+      <div className="relative z-[3] h-full w-full overflow-hidden rounded-[inherit]">{children}</div>
     </div>
   )
 }

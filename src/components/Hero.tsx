@@ -32,7 +32,7 @@ const highlightIcons = {
 } as const
 
 const mobileScrollRow =
-  '-mx-[max(1rem,env(safe-area-inset-left))] flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[max(1rem,env(safe-area-inset-left))] pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:grid-cols-1 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden'
+  '-mx-[max(1rem,env(safe-area-inset-left))] flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[max(1rem,env(safe-area-inset-left))] pb-2 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:grid-cols-1 sm:gap-4 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid-cols-3 [&::-webkit-scrollbar]:hidden'
 
 export function Hero() {
   return (
@@ -99,8 +99,8 @@ export function Hero() {
               return (
                 <GlowBorder key={h.title} className="h-full w-[min(80vw,17rem)] shrink-0 snap-center sm:w-auto lg:shrink">
                   <div
-                    className={`group relative flex h-full min-h-[9.5rem] flex-col overflow-hidden rounded-2xl bg-void-200/50 p-4 text-left backdrop-blur-sm sm:min-h-0 sm:p-6 ${
-                      i === 1 ? 'bg-gradient-to-br from-gold-muted/40 to-void-200/60 lg:-mt-2' : ''
+                    className={`group relative flex h-full min-h-[9.5rem] flex-col bg-void-200/50 p-4 text-left backdrop-blur-sm sm:min-h-0 sm:p-6 ${
+                      i === 1 ? 'bg-gradient-to-br from-gold-muted/40 to-void-200/60' : ''
                     }`}
                   >
                     <div

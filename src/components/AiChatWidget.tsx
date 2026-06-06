@@ -1,7 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
   Bot,
-  Calendar,
   MessageCircle,
   Send,
   Sparkles,
@@ -188,7 +187,7 @@ export function AiChatWidget() {
   }, [handleBookingLine, input, pushBot, pushUser, startBooking])
 
   return (
-    <div className="pointer-events-none fixed bottom-0 right-0 z-[200] flex flex-col items-end gap-3 p-3 pb-[max(1rem,env(safe-area-inset-bottom))] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-0 sm:p-4 sm:pl-4 sm:pr-[max(1rem,env(safe-area-inset-right))]">
+    <div className="pointer-events-none fixed bottom-[max(1.5rem,env(safe-area-inset-bottom))] right-[max(1.5rem,env(safe-area-inset-right))] z-[200] flex flex-col items-end gap-3">
       <AnimatePresence>
         {open && (
           <motion.div
@@ -337,25 +336,19 @@ export function AiChatWidget() {
         )}
       </AnimatePresence>
 
-      <div className="pointer-events-auto rounded-full border-2 border-gold-400/40 bg-void p-[2px] shadow-xl shadow-black/40">
-        <motion.button
-          type="button"
-          layout
-          onClick={() => setOpen((v) => !v)}
-          aria-expanded={open}
-          aria-controls={panelId}
-          className="flex min-h-11 items-center gap-2 rounded-full bg-void-200 px-3.5 py-3 text-sm font-semibold text-mist sm:px-4 [touch-action:manipulation]"
-        >
-          <span className="flex items-center gap-0.5">
-            <Sparkles className="h-4 w-4 text-gold-400" aria-hidden />
-            <Sparkles className="hidden h-3 w-3 text-gold-400 opacity-80 min-[400px]:inline" aria-hidden />
-            <Sparkles className="hidden h-2.5 w-2.5 text-gold-500 opacity-70 min-[480px]:inline" aria-hidden />
-          </span>
-          <span className="max-[359px]:sr-only">AI</span>
-          <span className="hidden min-[360px]:inline">AI Assistant</span>
-          <Calendar className="h-4 w-4 shrink-0 text-gold-400/90" aria-hidden />
-        </motion.button>
-      </div>
+      <motion.button
+        type="button"
+        layout
+        onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={panelId}
+        aria-label="Open AI assistant"
+        whileHover={{ scale: 1.06 }}
+        whileTap={{ scale: 0.96 }}
+        className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/30 bg-void-200/95 text-gold-400 shadow-lg shadow-black/45 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-gold-400/55 hover:shadow-[0_0_28px_-6px_rgba(212,175,55,0.5)] [touch-action:manipulation] sm:h-14 sm:w-14"
+      >
+        <Sparkles className="h-5 w-5 sm:h-[1.35rem] sm:w-[1.35rem]" aria-hidden />
+      </motion.button>
     </div>
   )
 }

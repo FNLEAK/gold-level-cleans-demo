@@ -76,7 +76,7 @@ export function HomeSections() {
                   className="h-full w-[min(78vw,17.5rem)] shrink-0 snap-center sm:w-auto md:shrink"
                 >
                   <GlowBorder className="h-full">
-                    <article className="relative flex h-full min-h-[11rem] flex-col rounded-2xl bg-void-200 p-4 backdrop-blur-sm sm:min-h-0 sm:p-6 md:p-8">
+                    <article className="relative flex h-full min-h-[11rem] flex-col bg-void-200 p-4 backdrop-blur-sm sm:min-h-0 sm:p-6 md:p-8">
                       <span className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gold-400/30 bg-gold-muted font-display text-xs font-bold text-gold-400 sm:h-10 sm:w-10 sm:text-sm">
                         {step.step}
                       </span>
