@@ -21,7 +21,6 @@ import {
   callTodayHeading,
   homeTrustStats,
   OWNER_NAME,
-  OWNER_HEADSHOT,
   OWNER_HEADSHOT_ALT,
   PHONE_DISPLAY,
   PHONE_TEL,
@@ -88,15 +87,22 @@ export function AboutSection() {
             <div className="flex flex-col items-center lg:items-start">
               <div className="relative">
                 <div className="relative h-36 w-28 overflow-hidden rounded-2xl bg-void-200 shadow-[0_0_48px_-8px_rgba(212,175,55,0.55)] ring-2 ring-gold-400/40 ring-offset-2 ring-offset-void-200 sm:h-44 sm:w-36 sm:rounded-3xl">
-                  <img
-                    src={OWNER_HEADSHOT}
-                    alt={OWNER_HEADSHOT_ALT}
-                    width={144}
-                    height={176}
-                    className="h-full w-full object-cover object-[center_18%]"
-                    loading="eager"
-                    decoding="async"
-                  />
+                  <picture>
+                    <source
+                      type="image/webp"
+                      srcSet="/mykala-288.webp 288w, /mykala-576.webp 576w"
+                      sizes="(max-width: 640px) 112px, 144px"
+                    />
+                    <img
+                      src="/mykala-288.webp"
+                      alt={OWNER_HEADSHOT_ALT}
+                      width={144}
+                      height={176}
+                      className="h-full w-full object-cover object-[center_18%]"
+                      loading="lazy"
+                      decoding="async"
+                    />
+                  </picture>
                   <div
                     className="pointer-events-none absolute inset-0 bg-gradient-to-t from-void/50 via-transparent to-transparent"
                     aria-hidden

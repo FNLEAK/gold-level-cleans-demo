@@ -5,6 +5,7 @@ import { GoldStreakConnectors } from '@/components/ui/gold-streak-line'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { homeProcessSteps, homeTrustStats, OWNER_NAME } from '../data/siteContent'
 import { portfolioProjects } from '../data/portfolio'
+import { portfolioSrcSet } from '../lib/images'
 import { FadeContent } from './reactbits/FadeContent'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
@@ -100,7 +101,9 @@ export function HomeSections() {
           </div>
 
           <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-            {featuredWork.map((project, i) => (
+            {featuredWork.map((project, i) => {
+              const img = portfolioSrcSet(project.image)
+              return (
               <FadeContent key={project.id} delay={i * 0.06}>
                 <Link
                   to="/portfolio"
@@ -108,9 +111,12 @@ export function HomeSections() {
                 >
                   <div className="relative aspect-[4/3] overflow-hidden">
                     <img
-                      src={project.image}
+                      src={img.src}
+                      srcSet={img.srcSet}
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                       alt={project.imageAlt}
                       loading="lazy"
+                      decoding="async"
                       className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent" />
@@ -124,7 +130,7 @@ export function HomeSections() {
                   </div>
                 </Link>
               </FadeContent>
-            ))}
+            )})}
           </div>
         </div>
       </section>

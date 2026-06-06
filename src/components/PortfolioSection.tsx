@@ -3,6 +3,7 @@ import { MapPin, Sparkles, X } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { portfolioIntro, portfolioProjects, type PortfolioProject } from '../data/portfolio'
+import { portfolioSrcSet } from '../lib/images'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { FadeContent } from './reactbits/FadeContent'
 import { PageHeader } from './PageHeader'
@@ -14,6 +15,8 @@ function PortfolioCard({
   project: PortfolioProject
   onOpen: (project: PortfolioProject) => void
 }) {
+  const img = portfolioSrcSet(project.image)
+
   return (
     <GlowBorder className="h-full w-full">
       <button
@@ -23,9 +26,12 @@ function PortfolioCard({
       >
       <div className="relative aspect-[4/3] overflow-hidden">
         <img
-          src={project.image}
+          src={img.src}
+          srcSet={img.srcSet}
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
           alt={project.imageAlt}
           loading="lazy"
+          decoding="async"
           className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-void via-void/20 to-transparent opacity-90" />
@@ -55,6 +61,8 @@ function PortfolioLightbox({
   project: PortfolioProject
   onClose: () => void
 }) {
+  const img = portfolioSrcSet(project.image)
+
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
       if (e.key === 'Escape') onClose()
@@ -95,7 +103,15 @@ function PortfolioLightbox({
           <X className="h-5 w-5" />
         </button>
         <div className="max-h-[40dvh] overflow-hidden sm:max-h-[50vh]">
-          <img src={project.image} alt={project.imageAlt} className="h-full w-full object-cover" />
+          <img
+            src={img.src}
+            srcSet={img.srcSet}
+            sizes="100vw"
+            alt={project.imageAlt}
+            loading="eager"
+            decoding="async"
+            className="h-full w-full object-cover"
+          />
         </div>
         <div className="p-5 sm:p-7">
           <p className="text-xs font-semibold uppercase tracking-wide text-gold-400">

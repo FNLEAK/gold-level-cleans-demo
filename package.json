@@ -8,6 +8,7 @@
     "dev:client": "node ./node_modules/vite/bin/vite.js",
     "dev:server": "node --watch server/index.js",
     "build": "node ./node_modules/typescript/lib/tsc.js -b && node ./node_modules/vite/bin/vite.js build",
+    "optimize-images": "node scripts/optimize-images.mjs",
     "start": "node server/index.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
     "preview": "node ./node_modules/vite/bin/vite.js preview"
