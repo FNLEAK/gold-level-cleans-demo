@@ -7,10 +7,10 @@ type BrandLogoProps = {
 }
 
 const sizeClasses: Record<NonNullable<BrandLogoProps['size']>, string> = {
-  compact: 'h-12 w-auto sm:h-14',
-  header: 'h-12 w-auto sm:h-14',
-  auth: 'h-24 w-auto sm:h-28',
-  hero: 'h-auto max-h-[10.5rem] w-auto max-w-[min(100%,17rem)] sm:max-h-[11.5rem] sm:max-w-[19rem]',
+  compact: 'h-11 w-auto sm:h-14',
+  header: 'h-11 w-auto sm:h-14',
+  auth: 'h-20 w-auto sm:h-28',
+  hero: 'h-auto max-h-[9rem] w-auto max-w-[min(100%,15rem)] sm:max-h-[11.5rem] sm:max-w-[19rem]',
 }
 
 const webpBySize: Record<NonNullable<BrandLogoProps['size']>, { src: string; srcSet: string }> = {

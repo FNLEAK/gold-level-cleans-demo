@@ -65,9 +65,9 @@ export function Header() {
       initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-      className="sticky top-0 z-[100] border-b border-white/[0.08] bg-[#050505]/95 pl-[max(1rem,env(safe-area-inset-left))] pr-[max(1rem,env(safe-area-inset-right))] pt-[max(0.75rem,env(safe-area-inset-top))] backdrop-blur-md md:px-8"
+      className="sticky top-0 z-[100] border-b border-white/[0.08] bg-[#050505]/95 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-md md:px-8 md:pt-[max(0.75rem,env(safe-area-inset-top))]"
     >
-      <div className="mx-auto max-w-6xl py-2 md:py-2.5">
+      <div className="mx-auto max-w-6xl py-1.5 md:py-2.5">
         {/* Desktop — logo + nav centered */}
         <div className="hidden items-center justify-center gap-5 lg:flex xl:gap-7">
           <Link to="/" className="shrink-0 [touch-action:manipulation]">
