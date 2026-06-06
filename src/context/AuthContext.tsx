@@ -127,15 +127,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [loadLegacySession, loadProfileFromSupabase, syncSupabaseSession])
 
   const signInCustomer = useCallback(async (email: string, password: string) => {
+    const normalizedEmail = email.trim().toLowerCase()
     if (isSupabaseConfigured()) {
       const supabase = getSupabase()
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      })
       if (error) throw new Error(error.message)
       const u = await loadProfileFromSupabase(data.user.id)
       if (!u) throw new Error('Profile not found')
       return u
     }
-    const { token, user: u } = await customerLogin(email, password)
+    if (import.meta.env.PROD) {
+      throw new Error(
+        'Sign-in is not configured for this site. Supabase environment variables are missing on the server.',
+      )
+    }
+    const { token, user: u } = await customerLogin(normalizedEmail, password)
     setAuthToken(token)
     setUser(u)
     return u
@@ -165,9 +174,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   )
 
   const signInOwner = useCallback(async (email: string, password: string) => {
+    const normalizedEmail = email.trim().toLowerCase()
     if (isSupabaseConfigured()) {
       const supabase = getSupabase()
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password })
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: normalizedEmail,
+        password,
+      })
       if (error) throw new Error(error.message)
       const profile = await fetchProfile(data.user.id)
       if (!profile || profile.role !== 'owner') {
@@ -180,7 +193,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setLoading(false)
       return u
     }
-    const { token, user: u } = await ownerLogin(email, password)
+    if (import.meta.env.PROD) {
+      throw new Error(
+        'Sign-in server is not configured for this site. Add VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY in Vercel environment variables, then redeploy.',
+      )
+    }
+    const { token, user: u } = await ownerLogin(normalizedEmail, password)
     setAuthToken(token)
     setUser(u)
     return u
