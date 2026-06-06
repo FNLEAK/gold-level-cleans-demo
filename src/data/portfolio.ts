@@ -27,7 +27,7 @@ export const portfolioProjects: PortfolioProject[] = [
   {
     id: 'bathroom-sanitize',
     title: 'Bathroom deep clean',
-    location: 'Lafayette, IN',
+    location: 'Noblesville, IN',
     service: 'Bathrooms',
     summary:
       'Double vanity, granite counters, fixtures polished, and mirrors streak-free — part of a full-home deep clean.',
