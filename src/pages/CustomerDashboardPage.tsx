@@ -329,7 +329,7 @@ export function CustomerDashboardPage() {
               <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
                 <QuickAction to="/book" label="Book online" desc="Pick your date" icon={Calendar} />
                 <QuickAction to="/services" label="Services" desc="What we clean" icon={Sparkles} />
-                <QuickAction to="/portfolio" label="Portfolio" desc="Past work" icon={Home} />
+                <QuickAction to="/portfolio" label="Our Work" desc="Past cleans" icon={Home} />
                 <QuickAction to="/contact" label="Contact" desc="Get a quote" icon={Mail} />
               </div>
             </motion.div>

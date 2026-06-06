@@ -73,7 +73,9 @@ export function ContactForm() {
               </p>
               <p className="mt-1 text-sm text-fog">Owner: {OWNER_NAME}</p>
               <p className="mt-3 text-sm leading-relaxed text-fog">
-                Deep cleans from $100 · Full house $500 · Garage add-on $120.
+                Custom quotes for every home. Garage add-ons typically $80–$120 depending on size.
+                Book online or send a message — share your budget and we&apos;ll confirm pricing before
+                your clean.
               </p>
               <a
                 href={`tel:${PHONE_TEL}`}

@@ -1,19 +1,14 @@
 import { motion } from 'framer-motion'
-import { ArrowRight, Calendar, ChevronRight, Home, ShieldCheck, Sparkles, Star } from 'lucide-react'
+import { ArrowRight, Calendar, ShieldCheck, Sparkles, Star, Home } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { GoldStreakConnectors } from '@/components/ui/gold-streak-line'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { homeProcessSteps, homeTrustStats, OWNER_NAME } from '../data/siteContent'
-import { isBeforeAfterProject, portfolioProjects } from '../data/portfolio'
-import { portfolioSrcSet } from '../lib/images'
-import { BeforeAfterCard } from './BeforeAfterCard'
 import { FadeContent } from './reactbits/FadeContent'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
 
 const trustIcons = [Calendar, ShieldCheck, Home, Star] as const
-const beforeAfterFeatured = portfolioProjects.find(isBeforeAfterProject)
-const featuredWork = portfolioProjects.filter((p) => !isBeforeAfterProject(p)).slice(0, 3)
 
 const mobileScrollRow =
   '-mx-[max(1rem,env(safe-area-inset-left))] flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[max(1rem,env(safe-area-inset-left))] pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden'
@@ -102,80 +97,6 @@ export function HomeSections() {
               <Calendar className="h-4 w-4" />
             </Link>
           </FadeContent>
-        </div>
-      </section>
-
-      {/* Portfolio preview — swipe row on phone */}
-      <section className="border-t border-white/[0.06] px-[max(1rem,env(safe-area-inset-left))] py-8 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-16">
-        <div className="mx-auto max-w-6xl">
-          <div className="flex items-end justify-between gap-3">
-            <FadeContent>
-              <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-400 sm:text-[11px]">
-                Our work
-              </p>
-              <h2 className="mt-2 font-display text-xl font-semibold text-white sm:mt-3 sm:text-4xl">
-                Homes we&apos;ve transformed
-              </h2>
-            </FadeContent>
-            <FadeContent delay={0.05}>
-              <Link
-                to="/portfolio"
-                className="inline-flex shrink-0 items-center gap-0.5 text-xs font-semibold text-gold-400 hover:text-gold-300 sm:text-sm"
-              >
-                See all
-                <ChevronRight className="h-4 w-4" />
-              </Link>
-            </FadeContent>
-          </div>
-
-          {beforeAfterFeatured ? (
-            <FadeContent delay={0.04} className="mt-5 sm:mt-8">
-              <BeforeAfterCard project={beforeAfterFeatured} />
-            </FadeContent>
-          ) : null}
-
-          <div
-            className={`${beforeAfterFeatured ? 'mt-8' : 'mt-5 sm:mt-8'} ${mobileScrollRow} sm:grid-cols-2 lg:grid-cols-3 lg:gap-5`}
-          >
-            {featuredWork.map((project, i) => {
-              const img = portfolioSrcSet(project.image)
-              return (
-                <FadeContent
-                  key={project.id}
-                  delay={i * 0.04}
-                  className="w-[min(82vw,18rem)] shrink-0 snap-center sm:w-auto lg:shrink"
-                >
-                  <Link
-                    to="/portfolio"
-                    className="group relative block overflow-hidden rounded-2xl border border-white/[0.08] bg-void-200/40 [touch-action:manipulation]"
-                  >
-                    <div className="relative aspect-[4/3] overflow-hidden">
-                      <img
-                        src={img.src}
-                        srcSet={img.srcSet}
-                        sizes="(max-width: 640px) 82vw, (max-width: 1024px) 50vw, 33vw"
-                        alt={project.imageAlt}
-                        loading="lazy"
-                        decoding="async"
-                        className="h-full w-full object-cover transition duration-500 group-hover:scale-105"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-void via-void/30 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-5">
-                        <p className="text-[10px] font-bold uppercase tracking-wider text-gold-400">
-                          {project.service}
-                        </p>
-                        <p className="mt-1 font-display text-base font-semibold text-white sm:text-lg">
-                          {project.title}
-                        </p>
-                        <p className="mt-0.5 text-[11px] text-fog sm:text-xs">{project.location}</p>
-                      </div>
-                    </div>
-                  </Link>
-                </FadeContent>
-              )
-            })}
-          </div>
-          <p className="mt-2 text-center text-[10px] text-fog/80 sm:hidden">Swipe for more →</p>
         </div>
       </section>
 

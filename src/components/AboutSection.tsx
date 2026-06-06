@@ -169,7 +169,7 @@ export function AboutSection() {
                     <p key={p.slice(0, 48)}>{p}</p>
                   ))}
                 </div>
-                <div className="mt-6 mobile-stack pt-2 lg:mt-auto lg:pt-6">
+                <div className="mt-6 flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap lg:mt-auto lg:pt-6">
                   <Link to="/book" className="btn-primary group !min-h-11 !px-6 !text-sm">
                     Book a deep clean
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />

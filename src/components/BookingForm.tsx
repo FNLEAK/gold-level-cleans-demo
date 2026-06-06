@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion'
-import { Calendar, CheckCircle2, Loader2, Mail, Phone, User } from 'lucide-react'
+import { Calendar, CheckCircle2, Loader2, Mail, Phone, User, Wallet } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import type { FormEvent } from 'react'
 import {
@@ -105,6 +105,7 @@ export function BookingForm() {
       const email = String(form.get('email') ?? '')
       const phone = String(form.get('phone') ?? '')
       const notes = String(form.get('notes') ?? '')
+      const budget = String(form.get('budget') ?? '').trim()
 
       if (isSupabaseConfigured()) {
         await submitBookingRequest({
@@ -115,17 +116,19 @@ export function BookingForm() {
           start_time: selectedTime,
           service: selectedService,
           notes,
+          customer_budget: budget || undefined,
           customer_id: user?.id,
         })
         setSuccess({ date: selectedDate })
       } else {
+        const notesWithBudget = [budget && `Budget: ${budget}`, notes].filter(Boolean).join('\n\n')
         const result = await createBooking({
           name,
           email,
           phone,
           date: selectedDate,
           service: selectedService,
-          notes,
+          notes: notesWithBudget,
         })
         setSuccess({ date: result.booking.date, remaining: result.remaining })
       }
@@ -147,7 +150,7 @@ export function BookingForm() {
         </h2>
         <p className="mt-3 text-fog">
           {isSupabaseConfigured()
-            ? `We received your request for ${formatDisplayDate(success.date)}. Mykala will confirm your slot by email.`
+            ? `We received your request for ${formatDisplayDate(success.date)}. Mykala will review your details and confirm your quote by email before your clean is scheduled.`
             : `${formatDisplayDate(success.date)}. We'll confirm by email shortly.`}
         </p>
         {success.remaining != null ? (
@@ -311,6 +314,26 @@ export function BookingForm() {
           </div>
 
           <div className="mt-5">
+            <label htmlFor="book-budget" className="flex items-center gap-2 text-xs font-semibold tracking-wide text-fog">
+              <Wallet className="h-3.5 w-3.5" aria-hidden />
+              Budget range <span className="font-normal text-fog/70">(optional)</span>
+            </label>
+            <div className={`${inputWrap} mt-2`}>
+              <input
+                id="book-budget"
+                name="budget"
+                type="text"
+                inputMode="text"
+                placeholder="e.g. $200–250 or around $300"
+                className={`${inputInner} min-h-12`}
+              />
+            </div>
+            <p className="mt-2 text-xs leading-relaxed text-fog/80">
+              Helps us match your request. Final price is confirmed before we accept your booking.
+            </p>
+          </div>
+
+          <div className="mt-5">
             <label htmlFor="book-notes" className="text-xs font-semibold tracking-wide text-fog">
               Notes (optional)
             </label>
@@ -337,7 +360,7 @@ export function BookingForm() {
                 Booking…
               </>
             ) : (
-              isSupabaseConfigured() ? 'Submit request' : 'Confirm booking'
+              isSupabaseConfigured() ? 'Request quote & book' : 'Confirm booking'
             )}
           </motion.button>
           </form>

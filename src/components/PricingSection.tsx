@@ -1,4 +1,5 @@
-import { Banknote, Car, Home, Sparkles } from 'lucide-react'
+import { Link } from 'react-router-dom'
+import { ArrowRight, Banknote, Car, Home, Sparkles } from 'lucide-react'
 import {
   pricesSectionHeading,
   pricingNote,
@@ -88,6 +89,17 @@ export function PricingSection({ hideSectionTitle = false }: PricingSectionProps
             )
           })}
         </div>
+
+        <FadeContent delay={0.2} className="mt-10 flex flex-col items-start gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="max-w-xl text-sm leading-relaxed text-fog">
+            Every quote is personalized. Book online to share your details and optional budget — we
+            confirm pricing before your clean is locked in.
+          </p>
+          <Link to="/book" className="btn-primary group shrink-0">
+            Get your quote
+            <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
+          </Link>
+        </FadeContent>
       </div>
     </section>
   )

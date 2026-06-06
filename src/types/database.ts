@@ -37,6 +37,7 @@ export type Database = {
           start_time: string | null
           service: string | null
           notes: string | null
+          customer_budget: string | null
           status: BookingStatus
           source: 'online' | 'owner'
           customer_id: string | null
@@ -52,6 +53,7 @@ export type Database = {
           start_time?: string | null
           service?: string | null
           notes?: string | null
+          customer_budget?: string | null
           status?: BookingStatus
           source?: 'online' | 'owner'
           customer_id?: string | null
@@ -64,6 +66,7 @@ export type Database = {
           start_time?: string | null
           service?: string | null
           notes?: string | null
+          customer_budget?: string | null
           status?: BookingStatus
           updated_at?: string
         }

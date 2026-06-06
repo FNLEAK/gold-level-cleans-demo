@@ -55,6 +55,7 @@ create table if not exists public.bookings (
   start_time time,
   service text,
   notes text,
+  customer_budget text,
   status text not null default 'pending'
     check (status in ('pending', 'confirmed', 'cancelled')),
   source text not null default 'online'

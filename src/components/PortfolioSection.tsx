@@ -172,7 +172,7 @@ export function PortfolioSection() {
     <section className="px-[max(1rem,env(safe-area-inset-left))] py-12 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-20">
       <div className="mx-auto max-w-6xl">
         <PageHeader
-          eyebrow="Portfolio"
+          eyebrow="Our Work"
           title="Homes we have cleaned"
           subtitle={portfolioIntro}
         />
@@ -181,7 +181,10 @@ export function PortfolioSection() {
           <div className="mt-12 space-y-8">
             <FadeContent>
               <p className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-400">
-                Before & after
+                Before &amp; after
+              </p>
+              <p className="mt-2 text-center text-sm text-fog">
+                Pull each way on the slider to compare photos
               </p>
             </FadeContent>
             {beforeAfterProjects.map((project, i) => (

@@ -20,6 +20,9 @@ export function BeforeAfterCard({ project }: { project: PortfolioProject }) {
             <Sparkles className="h-3 w-3" aria-hidden />
             {project.service}
           </p>
+          <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.1em] text-fog/80">
+            Pull each way on the photo above
+          </p>
           <h3 className="mt-2 font-display text-xl font-semibold text-white sm:text-2xl">
             {project.title}
           </h3>
@@ -28,9 +31,6 @@ export function BeforeAfterCard({ project }: { project: PortfolioProject }) {
             {project.location}
           </p>
           <p className="mt-3 text-sm leading-relaxed text-mist/90">{project.summary}</p>
-          <p className="mt-4 text-[11px] font-medium uppercase tracking-[0.14em] text-fog/70">
-            Drag the slider to reveal the transformation
-          </p>
         </div>
       </article>
     </GlowBorder>

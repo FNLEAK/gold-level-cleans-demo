@@ -19,6 +19,7 @@ export type Booking = {
   startTime?: string
   service: string
   notes: string
+  budget?: string
   status: string
   createdAt: string
   weekKey?: string

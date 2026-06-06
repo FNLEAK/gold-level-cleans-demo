@@ -12,6 +12,7 @@ export function mapBookingRow(row: BookingRow): Booking {
     startTime: row.start_time ? row.start_time.slice(0, 5) : undefined,
     service: row.service ?? '',
     notes: row.notes ?? '',
+    budget: row.customer_budget ?? undefined,
     status: row.status,
     createdAt: row.created_at,
     customerId: row.customer_id ?? undefined,
@@ -46,6 +47,7 @@ export async function submitBookingRequest(payload: {
   start_time: string
   service?: string
   notes?: string
+  customer_budget?: string
   customer_id?: string
 }) {
   const supabase = getSupabase()
@@ -59,6 +61,7 @@ export async function submitBookingRequest(payload: {
       start_time: payload.start_time,
       service: payload.service || null,
       notes: payload.notes || null,
+      customer_budget: payload.customer_budget?.trim() || null,
       status: 'pending',
       source: 'online',
       customer_id: payload.customer_id ?? null,
@@ -78,6 +81,7 @@ export async function submitBookingRequest(payload: {
     startTime: payload.start_time.slice(0, 5),
     service: payload.service ?? '',
     notes: payload.notes ?? '',
+    budget: payload.customer_budget?.trim() || undefined,
     status: 'pending',
     createdAt: new Date().toISOString(),
     customerId: payload.customer_id,

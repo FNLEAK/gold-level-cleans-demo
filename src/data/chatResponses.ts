@@ -12,7 +12,7 @@ export function getBotReply(input: string): string {
   }
 
   if (/\b(portfolio|gallery|photos|before|after|past work|examples)\b/.test(q)) {
-    return 'See homes we have cleaned on the Portfolio page. Tap a project for details and photos from completed deep cleans.'
+    return 'See homes we have cleaned on the Our Work page. Tap a project for details and photos from completed deep cleans.'
   }
 
   if (/\b(deep clean|what'?s included|include|service)\b/.test(q)) {

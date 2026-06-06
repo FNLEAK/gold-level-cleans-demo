@@ -19,7 +19,7 @@ const tiles = [
   {
     to: '/price-list',
     title: 'Price List',
-    desc: 'Transparent rates from $100 to full-house $500.',
+    desc: 'Starting points & custom quotes — book for yours.',
     icon: Banknote,
   },
   {

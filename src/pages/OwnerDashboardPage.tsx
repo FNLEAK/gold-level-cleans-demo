@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion'
 import {
+  Banknote,
   Calendar,
   CalendarCheck,
   CalendarPlus,
@@ -120,6 +121,13 @@ function OwnerBookingCard({
   const isUpcoming = !isCancelled && !isPending && booking.date >= today
   const isPast = !isCancelled && booking.date < today
 
+  const declineQuoteHref =
+    isPending && booking.email
+      ? `mailto:${encodeURIComponent(booking.email)}?subject=${encodeURIComponent('Gold Level Cleans — quote for your cleaning request')}&body=${encodeURIComponent(
+          `Hi ${booking.name},\n\nThank you for your booking request for ${formatDisplayDate(booking.date)} (${booking.service}).\n\nAfter reviewing your home details${booking.budget ? ` and budget of ${booking.budget}` : ''}, our quote for this clean would be $[amount].\n\nIf that works for you, reply to confirm and we'll finalize your slot. If you'd like to adjust the scope or budget, let us know — we're happy to find the right fit.\n\n— Mykala\nGold Level Cleans`,
+        )}`
+      : null
+
   return (
     <motion.li
       layout
@@ -165,6 +173,12 @@ function OwnerBookingCard({
                 </span>
               ) : null}
             </div>
+            {booking.budget ? (
+              <p className="mt-2 inline-flex items-center gap-1.5 rounded-lg border border-gold-400/25 bg-gold-muted/40 px-2.5 py-1 text-xs font-medium text-gold-300">
+                <Banknote className="h-3.5 w-3.5 shrink-0" aria-hidden />
+                Customer budget: {booking.budget}
+              </p>
+            ) : null}
             {booking.notes ? (
               <p className="mt-2 line-clamp-2 text-xs leading-relaxed text-fog/90">{booking.notes}</p>
             ) : null}
@@ -188,19 +202,30 @@ function OwnerBookingCard({
             {isCancelled ? 'cancelled' : isPending ? 'pending' : isPast ? 'completed' : booking.status}
           </span>
           {isPending && onConfirm ? (
-            <button
-              type="button"
-              onClick={() => onConfirm(booking.id)}
-              disabled={confirming === booking.id}
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gold-400/35 bg-gold-muted px-3 py-2 text-xs font-semibold text-gold-300 transition hover:bg-gold-400/20 disabled:opacity-40"
-            >
-              {confirming === booking.id ? (
-                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
-              ) : (
-                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
-              )}
-              Accept / Confirm
-            </button>
+            <>
+              <button
+                type="button"
+                onClick={() => onConfirm(booking.id)}
+                disabled={confirming === booking.id}
+                className="inline-flex items-center gap-1.5 rounded-lg border border-gold-400/35 bg-gold-muted px-3 py-2 text-xs font-semibold text-gold-300 transition hover:bg-gold-400/20 disabled:opacity-40"
+              >
+                {confirming === booking.id ? (
+                  <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+                ) : (
+                  <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+                )}
+                Accept / Confirm
+              </button>
+              {declineQuoteHref ? (
+                <a
+                  href={declineQuoteHref}
+                  className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 px-3 py-2 text-xs font-semibold text-fog transition hover:border-gold-400/30 hover:text-gold-300"
+                >
+                  <Mail className="h-3.5 w-3.5" aria-hidden />
+                  Email quote
+                </a>
+              ) : null}
+            </>
           ) : null}
           {!isCancelled && isUpcoming ? (
             <button

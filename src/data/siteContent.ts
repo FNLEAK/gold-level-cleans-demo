@@ -125,14 +125,15 @@ export const garageAddonBody =
 export const servicesPricingNote =
   'Pricing varies home to home. Layout, size, condition, and add-ons all factor in. Book online or contact us and we will confirm a custom quote before your clean.'
 
-export const pricesSectionHeading = 'Pricing'
+export const pricesSectionHeading = 'Starting points & quotes'
 
 export const pricingTiers = [
   {
     id: '1br',
     name: '1 Bedroom Deep Clean',
-    price: '$100',
-    description: 'Complete deep clean for a one-bedroom home or apartment.',
+    price: 'From $100',
+    description:
+      'Typical starting point for a one-bedroom home. Final quote depends on size, condition, and add-ons.',
     featured: false,
     addon: false,
   },
@@ -140,30 +141,40 @@ export const pricingTiers = [
     id: '2br',
     name: '2 Bedroom+ Deep Clean',
     price: 'From $200',
-    description: 'Starting at $200 and up per bedroom, scaled to your layout.',
+    description: 'Scaled to bedrooms and layout. We confirm your custom quote before your clean.',
     featured: true,
     addon: false,
   },
   {
     id: 'full',
     name: 'Full House Deep Clean',
-    price: '$500',
-    description: 'Whole-home deep clean for maximum refresh before or after a big event.',
+    price: 'Custom quote',
+    description:
+      'Whole-home resets vary by square footage and condition. Book online or contact us for pricing.',
     featured: false,
     addon: false,
   },
   {
     id: 'garage',
     name: 'Garage Deep Clean Add-on',
-    price: '$120',
-    description: 'Add to any package. Floors swept, surfaces wiped, clutter-friendly reset.',
+    price: '$80–$120',
+    description:
+      'Add to any package. Price depends on garage size, clutter level, and degreasing needs.',
     featured: false,
     addon: true,
   },
 ] as const
 
 export const pricingNote =
-  'Final quotes may vary based on home size, condition, and add-ons. Contact us for a personalized estimate.'
+  'Every home is different — layout, condition, and add-ons all affect the final price. Book online or contact us for a personalized quote. Optional: share your budget on the booking form so we can respond faster.'
+
+export const promoBanner = {
+  headline: 'First Cleaning: $50 Off Any Service Over $250',
+  badge: 'New customers only',
+  subline: 'Limited-time welcome offer — book your deep clean today',
+  ctaLabel: 'Book now',
+  ctaTo: '/book',
+} as const
 
 export const contactHeading = 'Contact Us'
 export const contactCallHeading = 'Book your Gold Level deep clean'
