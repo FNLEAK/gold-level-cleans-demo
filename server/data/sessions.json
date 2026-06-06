@@ -1,0 +1,30 @@
+{
+  "8e846fd4-dc7a-4834-b0a7-cce6429526e9a2dc42e7359a4fc89f39d3b12f99d675": {
+    "userId": "admin-1",
+    "role": "owner",
+    "email": "admin@goldlevelcleans.com",
+    "name": "Gold Level Admin",
+    "expiresAt": 1783260843593
+  },
+  "cbd2d2e6-3bbf-4194-8147-57ce2672cef8b78b3dba17df4ce5acc00906afe9ca39": {
+    "userId": "admin-1",
+    "role": "owner",
+    "email": "admin@goldlevelcleans.com",
+    "name": "Gold Level Admin",
+    "expiresAt": 1783260856327
+  },
+  "81e2a67e-1cb6-45a1-9e4f-2579f0a531febcdfbe41949c4d7bb212b8ae6c78e5e6": {
+    "userId": "admin-1",
+    "role": "owner",
+    "email": "admin@goldlevelcleans.com",
+    "name": "Gold Level Admin",
+    "expiresAt": 1783293212136
+  },
+  "75711bc8-13c5-414a-b851-4b0c50f94170e0d78ffba48242a9b23dc6815797bc20": {
+    "userId": "admin-1",
+    "role": "owner",
+    "email": "admin@goldlevelcleans.com",
+    "name": "Gold Level Admin",
+    "expiresAt": 1783296523475
+  }
+}

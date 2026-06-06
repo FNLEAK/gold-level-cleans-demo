@@ -1,0 +1,24 @@
+{
+  "owner": {
+    "id": "owner-1",
+    "name": "Mykala Ashbaugh",
+    "email": "mykalaashbaugh353@gmail.com",
+    "passwordHash": "4246838ea1dda3af1d4ee77a99e5b243:139fbbc5584d2f09e7b7b22c84f460a103025ff09c9e2f20c58176735ed95e9885a027974e60ff370210b18f2203ba22397d9b0f06fd87a5e02546147380574b"
+  },
+  "admin": {
+    "id": "admin-1",
+    "name": "Gold Level Admin",
+    "email": "admin@goldlevelcleans.com",
+    "passwordHash": "ed21c907752112dbaace78057e0e2981:6c462d90815d621cd52003f513adda54331693293c24d82fec60fd783565b04cf3017986b0c8d45371f4e4513f1e3feedb36ad80504f495f32e9ed8425fd85be"
+  },
+  "customers": [
+    {
+      "id": "32bd929e-c28c-44a0-8cee-962120a05b34",
+      "name": "Jay",
+      "email": "renderbyjay@gmail.com",
+      "phone": "",
+      "passwordHash": "4a5c61c7673b23d3595c749b8f9188d7:0a8c0e7e78c7dc1162f756b0a82510d3f0d44bc20eb4a452b0779bf871fdfcea2cf2010d19059c5509659cea5ca9cea1ae9e98144d3c2e61b0cd07a42c84b250",
+      "createdAt": "2026-06-05T14:15:50.556Z"
+    }
+  ]
+}
