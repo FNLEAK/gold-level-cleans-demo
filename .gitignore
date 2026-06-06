@@ -9,3 +9,5 @@ Thumbs.db
 .vite/
 *.tsbuildinfo
 server/data/sessions.json
+
+.vercel

@@ -16,6 +16,7 @@ export type Booking = {
   email: string
   phone: string
   date: string
+  startTime?: string
   service: string
   notes: string
   status: string
@@ -36,8 +37,10 @@ export type OwnerDashboard = {
   bookingsThisWeek: Booking[]
   upcomingBookings: Booking[]
   allBookings: Booking[]
+  pendingBookings?: Booking[]
   totalActiveBookings: number
   upcomingCount: number
+  pendingCount?: number
   completedCount: number
   cancelledCount: number
 }

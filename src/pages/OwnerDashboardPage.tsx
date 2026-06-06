@@ -12,11 +12,11 @@ import {
   RefreshCw,
   Sparkles,
   User,
-  Users,
   XCircle,
 } from 'lucide-react'
 import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react'
 import { Link } from 'react-router-dom'
+import { OwnerCalendar } from '../components/OwnerCalendar'
 import { SelectField } from '../components/SelectField'
 import { pricingTiers } from '../data/siteContent'
 import { useAuth } from '../context/AuthContext'
@@ -30,6 +30,16 @@ import {
   type Booking,
   type OwnerDashboard,
 } from '../lib/api'
+import { isSupabaseConfigured } from '../lib/supabase'
+import {
+  buildOwnerDashboardFromBookings,
+  cancelBookingSupabase,
+  confirmBooking,
+  createOwnerBookingSupabase,
+  fetchAllBookingsForOwner,
+  formatStartTime,
+  subscribeToBookings,
+} from '../lib/supabase-bookings'
 
 type Tab = 'upcoming' | 'week' | 'all'
 
@@ -94,15 +104,20 @@ function StatTile({
 function OwnerBookingCard({
   booking,
   onCancel,
+  onConfirm,
   cancelling,
+  confirming,
 }: {
   booking: Booking
   onCancel: (id: string) => void
+  onConfirm?: (id: string) => void
   cancelling: string | null
+  confirming?: string | null
 }) {
   const isCancelled = booking.status === 'cancelled'
+  const isPending = booking.status === 'pending'
   const today = new Date().toISOString().slice(0, 10)
-  const isUpcoming = !isCancelled && booking.date >= today
+  const isUpcoming = !isCancelled && !isPending && booking.date >= today
   const isPast = !isCancelled && booking.date < today
 
   return (
@@ -134,6 +149,9 @@ function OwnerBookingCard({
             <p className="mt-1 flex items-center gap-1.5 text-sm text-fog">
               <Calendar className="h-3.5 w-3.5 shrink-0 text-gold-400/80" aria-hidden />
               {formatDisplayDate(booking.date)}
+              {booking.startTime ? (
+                <span className="text-gold-400/90">· {formatStartTime(booking.startTime)}</span>
+              ) : null}
             </p>
             <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-fog">
               <span className="inline-flex items-center gap-1">
@@ -157,16 +175,33 @@ function OwnerBookingCard({
             className={`inline-flex w-fit items-center gap-1.5 rounded-full px-3 py-1.5 text-[10px] font-bold uppercase tracking-wider ${
               isCancelled
                 ? 'bg-red-500/15 text-red-300 ring-1 ring-red-500/20'
-                : isUpcoming
-                  ? 'bg-gold-muted text-gold-400 ring-1 ring-gold-400/25'
-                  : isPast
-                    ? 'bg-white/[0.06] text-fog ring-1 ring-white/10'
-                    : 'bg-white/[0.06] text-fog ring-1 ring-white/10'
+                : isPending
+                  ? 'bg-amber-500/15 text-amber-200 ring-1 ring-amber-500/25'
+                  : isUpcoming
+                    ? 'bg-gold-muted text-gold-400 ring-1 ring-gold-400/25'
+                    : isPast
+                      ? 'bg-white/[0.06] text-fog ring-1 ring-white/10'
+                      : 'bg-white/[0.06] text-fog ring-1 ring-white/10'
             }`}
           >
-            {isUpcoming ? <Clock className="h-3 w-3" aria-hidden /> : null}
-            {isCancelled ? 'cancelled' : isPast ? 'completed' : booking.status}
+            {isPending ? null : isUpcoming ? <Clock className="h-3 w-3" aria-hidden /> : null}
+            {isCancelled ? 'cancelled' : isPending ? 'pending' : isPast ? 'completed' : booking.status}
           </span>
+          {isPending && onConfirm ? (
+            <button
+              type="button"
+              onClick={() => onConfirm(booking.id)}
+              disabled={confirming === booking.id}
+              className="inline-flex items-center gap-1.5 rounded-lg border border-gold-400/35 bg-gold-muted px-3 py-2 text-xs font-semibold text-gold-300 transition hover:bg-gold-400/20 disabled:opacity-40"
+            >
+              {confirming === booking.id ? (
+                <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden />
+              ) : (
+                <CheckCircle2 className="h-3.5 w-3.5" aria-hidden />
+              )}
+              Accept / Confirm
+            </button>
+          ) : null}
           {!isCancelled && isUpcoming ? (
             <button
               type="button"
@@ -219,14 +254,25 @@ function AddScheduleForm({
     setSuccess(false)
 
     try {
-      await createOwnerBooking({
-        name: String(form.get('name') ?? ''),
-        email: String(form.get('email') ?? ''),
-        phone: String(form.get('phone') ?? ''),
-        date: selectedDate,
-        service: selectedService,
-        notes: String(form.get('notes') ?? ''),
-      })
+      if (isSupabaseConfigured()) {
+        await createOwnerBookingSupabase({
+          customer_name: String(form.get('name') ?? ''),
+          customer_email: String(form.get('email') ?? ''),
+          customer_phone: String(form.get('phone') ?? ''),
+          scheduled_date: selectedDate,
+          service: selectedService,
+          notes: String(form.get('notes') ?? ''),
+        })
+      } else {
+        await createOwnerBooking({
+          name: String(form.get('name') ?? ''),
+          email: String(form.get('email') ?? ''),
+          phone: String(form.get('phone') ?? ''),
+          date: selectedDate,
+          service: selectedService,
+          notes: String(form.get('notes') ?? ''),
+        })
+      }
       e.currentTarget.reset()
       setSuccess(true)
       onCreated()
@@ -364,12 +410,22 @@ export function OwnerDashboardPage() {
   const [error, setError] = useState('')
   const [formError, setFormError] = useState('')
   const [cancelling, setCancelling] = useState<string | null>(null)
+  const [confirming, setConfirming] = useState<string | null>(null)
   const [tab, setTab] = useState<Tab>('upcoming')
+  const [calendarDate, setCalendarDate] = useState<string | null>(null)
+
+  const loadDashboard = useCallback(async () => {
+    if (isSupabaseConfigured()) {
+      const all = await fetchAllBookingsForOwner()
+      return buildOwnerDashboardFromBookings(all)
+    }
+    return getOwnerDashboard()
+  }, [])
 
   const refresh = useCallback(async (silent = false) => {
     if (!silent) setRefreshing(true)
     try {
-      setData(await getOwnerDashboard())
+      setData(await loadDashboard())
       setError('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not load dashboard')
@@ -377,19 +433,27 @@ export function OwnerDashboardPage() {
       setLoading(false)
       if (!silent) setRefreshing(false)
     }
-  }, [])
+  }, [loadDashboard])
 
   useEffect(() => {
     refresh(true)
     const id = window.setInterval(() => refresh(true), 30_000)
-    return () => window.clearInterval(id)
+    const unsub = subscribeToBookings(() => refresh(true))
+    return () => {
+      window.clearInterval(id)
+      unsub()
+    }
   }, [refresh])
 
   async function handleCancel(id: string) {
     if (!confirm('Cancel this booking?')) return
     setCancelling(id)
     try {
-      await cancelBooking(id)
+      if (isSupabaseConfigured()) {
+        await cancelBookingSupabase(id)
+      } else {
+        await cancelBooking(id)
+      }
       await refresh(true)
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Cancel failed')
@@ -398,12 +462,29 @@ export function OwnerDashboardPage() {
     }
   }
 
+  async function handleConfirm(id: string) {
+    setConfirming(id)
+    try {
+      await confirmBooking(id)
+      await refresh(true)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not confirm booking')
+    } finally {
+      setConfirming(null)
+    }
+  }
+
   const listBookings = useMemo(() => {
     if (!data) return []
+    if (calendarDate) {
+      return data.allBookings.filter((b) => b.date === calendarDate && b.status !== 'cancelled')
+    }
     if (tab === 'week') return data.bookingsThisWeek
     if (tab === 'all') return data.allBookings
     return data.upcomingBookings
-  }, [data, tab])
+  }, [data, tab, calendarDate])
+
+  const pendingBookings = data?.pendingBookings ?? []
 
   const firstName = user?.name?.split(' ')[0] ?? 'Mykala'
 
@@ -468,9 +549,9 @@ export function OwnerDashboardPage() {
           <div className="mt-6 rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-4 text-center sm:px-6">
             <p className="text-sm text-red-300">{error}</p>
             <p className="mt-2 text-xs text-fog">
-              Make sure the API is running: use{' '}
-              <code className="rounded bg-black/30 px-1.5 py-0.5 text-gold-400">npm run dev</code>{' '}
-              (not dev:client alone).
+              {isSupabaseConfigured()
+                ? 'Check Supabase connection and owner role in profiles.'
+                : 'Make sure the API is running: use npm run dev (not dev:client alone).'}
             </p>
             <button
               type="button"
@@ -491,12 +572,6 @@ export function OwnerDashboardPage() {
           <>
             <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <StatTile
-                label="Online now"
-                value={data.onlineUsers}
-                hint="Visitors last 60 sec"
-                icon={Users}
-              />
-              <StatTile
                 label="This week"
                 value={`${data.bookedThisWeek} / ${WEEKLY_BOOKING_CAP}`}
                 hint={data.week.label}
@@ -504,9 +579,15 @@ export function OwnerDashboardPage() {
                 accent
               />
               <StatTile
+                label="Pending"
+                value={data.pendingCount ?? pendingBookings.length}
+                hint="Awaiting your confirm"
+                icon={CalendarPlus}
+              />
+              <StatTile
                 label="Upcoming"
                 value={data.upcomingCount}
-                hint="Scheduled ahead"
+                hint="Confirmed ahead"
                 icon={Clock}
               />
               <StatTile
@@ -515,6 +596,46 @@ export function OwnerDashboardPage() {
                 hint={`${data.cancelledCount} cancelled total`}
                 icon={Sparkles}
               />
+            </div>
+
+            {pendingBookings.length > 0 ? (
+              <div className="mt-8 overflow-hidden rounded-3xl border border-amber-500/25 bg-amber-500/[0.06] backdrop-blur-sm">
+                <div className="border-b border-amber-500/20 px-5 py-5 sm:px-7">
+                  <h2 className="font-display text-xl font-semibold text-white">Booking requests</h2>
+                  <p className="mt-1 text-sm text-fog">New online requests — confirm to add to your schedule</p>
+                </div>
+                <ul className="max-h-[min(50vh,420px)] space-y-3 overflow-y-auto p-5 sm:p-7">
+                  {pendingBookings.map((b) => (
+                    <OwnerBookingCard
+                      key={b.id}
+                      booking={b}
+                      onCancel={handleCancel}
+                      onConfirm={handleConfirm}
+                      cancelling={cancelling}
+                      confirming={confirming}
+                    />
+                  ))}
+                </ul>
+              </div>
+            ) : null}
+
+            <div className="mt-8">
+              <OwnerCalendar
+                bookings={data.allBookings}
+                onSelectDate={(iso) => {
+                  setCalendarDate(iso)
+                  setTab('all')
+                }}
+              />
+              {calendarDate ? (
+                <button
+                  type="button"
+                  onClick={() => setCalendarDate(null)}
+                  className="mt-3 text-xs font-semibold text-gold-400 hover:text-gold-300"
+                >
+                  Clear calendar filter ({formatDisplayDate(calendarDate)})
+                </button>
+              ) : null}
             </div>
 
             <div className="mt-8 grid gap-6 lg:grid-cols-5">
@@ -579,7 +700,9 @@ export function OwnerDashboardPage() {
                             key={b.id}
                             booking={b}
                             onCancel={handleCancel}
+                            onConfirm={b.status === 'pending' ? handleConfirm : undefined}
                             cancelling={cancelling}
+                            confirming={confirming}
                           />
                         ))}
                       </ul>

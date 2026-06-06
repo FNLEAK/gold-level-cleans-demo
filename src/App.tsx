@@ -1,6 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import { ErrorBoundary } from './components/ErrorBoundary'
-import { ProtectedRoute } from './components/ProtectedRoute'
+import { OwnerProtectedRoute, ProtectedRoute } from './components/ProtectedRoute'
 import { DashboardShell } from './layouts/DashboardShell'
 import { Layout } from './layouts/Layout'
 import { HomePage } from './pages/HomePage'
@@ -14,6 +14,7 @@ import { SignUpPage } from './pages/SignUpPage'
 import { CustomerDashboardPage } from './pages/CustomerDashboardPage'
 import { OwnerSignInPage } from './pages/OwnerSignInPage'
 import { OwnerDashboardPage } from './pages/OwnerDashboardPage'
+import { NotFoundPage } from './pages/NotFoundPage'
 
 function App() {
   return (
@@ -36,19 +37,20 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route path="/404" element={<NotFoundPage />} />
       </Route>
       <Route path="/owner/sign-in" element={<OwnerSignInPage />} />
-      <Route path="/owner" element={<Navigate to="/owner/dashboard" replace />} />
+      <Route path="/owner" element={<Navigate to="/404" replace />} />
       <Route
         path="/owner/dashboard"
         element={
-          <ProtectedRoute role="owner">
+          <OwnerProtectedRoute>
             <DashboardShell>
               <ErrorBoundary title="Owner dashboard error">
                 <OwnerDashboardPage />
               </ErrorBoundary>
             </DashboardShell>
-          </ProtectedRoute>
+          </OwnerProtectedRoute>
         }
       />
     </Routes>

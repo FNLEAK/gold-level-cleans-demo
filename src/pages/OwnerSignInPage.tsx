@@ -3,9 +3,6 @@ import { useState, type FormEvent } from 'react'
 import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { AuthShell } from '../components/AuthShell'
 import { useAuth } from '../context/AuthContext'
-import { EMAIL, OWNER_NAME } from '../data/siteContent'
-
-const ADMIN_EMAIL = 'admin@goldlevelcleans.com'
 
 export function OwnerSignInPage() {
   const { user, loading, signInOwner } = useAuth()
@@ -14,7 +11,7 @@ export function OwnerSignInPage() {
   const [submitting, setSubmitting] = useState(false)
 
   if (!loading && user?.role === 'owner') return <Navigate to="/owner/dashboard" replace />
-  if (!loading && user?.role === 'customer') return <Navigate to="/account" replace />
+  if (!loading && user?.role === 'customer') return <Navigate to="/404" replace />
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -25,7 +22,14 @@ export function OwnerSignInPage() {
       await signInOwner(String(form.get('email')), String(form.get('password')))
       navigate('/owner/dashboard')
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Sign in failed')
+      const msg = err instanceof Error ? err.message : 'Sign in failed'
+      if (msg.toLowerCase().includes('invalid login credentials')) {
+        setError('Invalid email or password.')
+      } else if (msg.toLowerCase().includes('owner access') || msg.toLowerCase().includes('customer')) {
+        setError('Access denied.')
+      } else {
+        setError('Sign in failed. Please try again.')
+      }
     } finally {
       setSubmitting(false)
     }
@@ -33,17 +37,12 @@ export function OwnerSignInPage() {
 
   return (
     <AuthShell
-      title="Owner sign in"
-      subtitle="Manage bookings, weekly capacity, and live site activity. Stay signed in for 30 days."
+      title="Sign in"
+      subtitle="Enter your credentials to continue."
       footer={
-        <>
-          <Link to="/" className="text-fog hover:text-mist">
-            Back to website
-          </Link>
-          <Link to="/sign-in" className="text-fog hover:text-mist">
-            Customer sign in
-          </Link>
-        </>
+        <Link to="/" className="text-fog hover:text-mist">
+          Back to website
+        </Link>
       }
     >
       <form onSubmit={onSubmit} className="space-y-4">
@@ -61,7 +60,7 @@ export function OwnerSignInPage() {
             name="email"
             type="email"
             required
-            defaultValue={EMAIL}
+            autoComplete="username"
             className="input-field mt-1.5"
           />
         </div>
@@ -74,26 +73,15 @@ export function OwnerSignInPage() {
             name="password"
             type="password"
             required
+            autoComplete="current-password"
             className="input-field mt-1.5"
-            placeholder="Your password"
+            placeholder="Password"
           />
         </div>
         <button type="submit" disabled={submitting} className="btn-primary w-full !rounded-xl">
-          {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Open owner dashboard'}
+          {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : 'Sign in'}
         </button>
       </form>
-      <div className="mt-4 space-y-2 rounded-lg border border-white/10 bg-void-200/40 p-3 text-[11px] leading-relaxed text-fog">
-        <p>
-          <span className="font-semibold text-mist">Owner ({OWNER_NAME}):</span>{' '}
-          <span className="text-gold-400">{EMAIL}</span> · password{' '}
-          <span className="text-gold-400">GoldLevel353</span>
-        </p>
-        <p>
-          <span className="font-semibold text-mist">Admin:</span>{' '}
-          <span className="text-gold-400">{ADMIN_EMAIL}</span> · password{' '}
-          <span className="text-gold-400">GoldAdmin353</span>
-        </p>
-      </div>
     </AuthShell>
   )
 }

@@ -21,6 +21,8 @@ import {
   type Booking,
   type CustomerDashboard,
 } from '../lib/api'
+import { fetchCustomerBookings } from '../lib/supabase-bookings'
+import { isSupabaseConfigured } from '../lib/supabase'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
 
@@ -166,14 +168,28 @@ export function CustomerDashboardPage() {
 
   const load = useCallback(async () => {
     try {
-      setData(await getCustomerDashboard())
+      if (isSupabaseConfigured() && user?.email) {
+        const bookings = await fetchCustomerBookings(user.email)
+        const today = new Date().toISOString().slice(0, 10)
+        const upcomingBookings = bookings.filter(
+          (b) => b.status !== 'cancelled' && b.date >= today,
+        )
+        setData({
+          user: { name: user.name, email: user.email },
+          bookings,
+          upcomingBookings,
+          totalBookings: bookings.length,
+        })
+      } else {
+        setData(await getCustomerDashboard())
+      }
       setError('')
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Could not load dashboard')
     } finally {
       setLoading(false)
     }
-  }, [])
+  }, [user?.email, user?.id, user?.name])
 
   useEffect(() => {
     load()

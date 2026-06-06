@@ -169,9 +169,6 @@ export function Footer() {
               <Link to="/sign-in" className={`block ${footerLink}`}>
                 Customer sign in
               </Link>
-              <Link to="/owner/sign-in" className={`block ${footerLink} text-white/35 hover:text-white/55`}>
-                Owner admin
-              </Link>
               <Link
                 to="/book"
                 className="inline-flex items-center gap-1 text-[13px] font-semibold text-gold-400 hover:text-gold-300"

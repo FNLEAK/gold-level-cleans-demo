@@ -10,6 +10,12 @@ import {
   WEEKLY_BOOKING_CAP,
   type WeekAvailability,
 } from '../lib/api'
+import { isSupabaseConfigured } from '../lib/supabase'
+import {
+  getAvailabilitySupabase,
+  START_TIME_OPTIONS,
+  submitBookingRequest,
+} from '../lib/supabase-bookings'
 import { pricingTiers } from '../data/siteContent'
 import { useAuth } from '../context/AuthContext'
 import { GlowBorder } from '@/components/ui/spotlight-card'
@@ -41,11 +47,12 @@ export function BookingForm() {
   const dates = upcomingDateOptions()
   const [selectedDate, setSelectedDate] = useState(dates[0] ?? '')
   const [selectedService, setSelectedService] = useState<string>(serviceOptions[0] ?? '')
+  const [selectedTime, setSelectedTime] = useState<string>(START_TIME_OPTIONS[1]?.value ?? '09:00')
   const [availability, setAvailability] = useState<WeekAvailability | null>(null)
   const [loadingAvail, setLoadingAvail] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState<{ date: string; remaining: number } | null>(null)
+  const [success, setSuccess] = useState<{ date: string; remaining?: number } | null>(null)
 
   const dateOptions = useMemo(
     () =>
@@ -66,7 +73,9 @@ export function BookingForm() {
     setLoadingAvail(true)
     setError('')
     try {
-      const data = await getAvailability(date)
+      const data = isSupabaseConfigured()
+        ? await getAvailabilitySupabase(date)
+        : await getAvailability(date)
       setAvailability(data)
     } catch {
       setAvailability(null)
@@ -92,15 +101,34 @@ export function BookingForm() {
     setError('')
 
     try {
-      const result = await createBooking({
-        name: String(form.get('name') ?? ''),
-        email: String(form.get('email') ?? ''),
-        phone: String(form.get('phone') ?? ''),
-        date: selectedDate,
-        service: selectedService,
-        notes: String(form.get('notes') ?? ''),
-      })
-      setSuccess({ date: result.booking.date, remaining: result.remaining })
+      const name = String(form.get('name') ?? '')
+      const email = String(form.get('email') ?? '')
+      const phone = String(form.get('phone') ?? '')
+      const notes = String(form.get('notes') ?? '')
+
+      if (isSupabaseConfigured()) {
+        await submitBookingRequest({
+          customer_name: name,
+          customer_email: email,
+          customer_phone: phone,
+          scheduled_date: selectedDate,
+          start_time: selectedTime,
+          service: selectedService,
+          notes,
+          customer_id: user?.id,
+        })
+        setSuccess({ date: selectedDate })
+      } else {
+        const result = await createBooking({
+          name,
+          email,
+          phone,
+          date: selectedDate,
+          service: selectedService,
+          notes,
+        })
+        setSuccess({ date: result.booking.date, remaining: result.remaining })
+      }
       e.currentTarget.reset()
       loadAvailability(selectedDate)
     } catch (err) {
@@ -114,13 +142,19 @@ export function BookingForm() {
     return (
       <FadeContent className="mx-auto max-w-lg rounded-3xl border border-gold-400/30 bg-gold-muted p-8 text-center">
         <CheckCircle2 className="mx-auto h-12 w-12 text-gold-400" aria-hidden />
-        <h2 className="mt-4 font-display text-2xl font-semibold text-white">You&apos;re booked!</h2>
+        <h2 className="mt-4 font-display text-2xl font-semibold text-white">
+          {isSupabaseConfigured() ? 'Request received!' : "You're booked!"}
+        </h2>
         <p className="mt-3 text-fog">
-          {formatDisplayDate(success.date)}. We&apos;ll confirm by email shortly.
+          {isSupabaseConfigured()
+            ? `We received your request for ${formatDisplayDate(success.date)}. Mykala will confirm your slot by email.`
+            : `${formatDisplayDate(success.date)}. We'll confirm by email shortly.`}
         </p>
-        <p className="mt-2 text-sm text-fog">
-          {success.remaining} slot{success.remaining === 1 ? '' : 's'} left this week.
-        </p>
+        {success.remaining != null ? (
+          <p className="mt-2 text-sm text-fog">
+            {success.remaining} slot{success.remaining === 1 ? '' : 's'} left this week.
+          </p>
+        ) : null}
         <button
           type="button"
           onClick={() => setSuccess(null)}
@@ -214,6 +248,17 @@ export function BookingForm() {
             />
           </div>
 
+          <div className="mt-5 grid gap-5 sm:grid-cols-2">
+            <SelectField
+              id="book-time"
+              label="Preferred start time"
+              value={selectedTime}
+              onChange={setSelectedTime}
+              options={START_TIME_OPTIONS.map((t) => ({ value: t.value, label: t.label }))}
+              required
+            />
+          </div>
+
           <div className="mt-5">
             <label htmlFor="book-name" className="flex items-center gap-2 text-xs font-semibold tracking-wide text-fog">
               <User className="h-3.5 w-3.5" aria-hidden />
@@ -292,7 +337,7 @@ export function BookingForm() {
                 Booking…
               </>
             ) : (
-              'Confirm booking'
+              isSupabaseConfigured() ? 'Submit request' : 'Confirm booking'
             )}
           </motion.button>
           </form>
