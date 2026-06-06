@@ -25,6 +25,16 @@ export const portfolioProjects: PortfolioProject[] = [
     imageAlt: 'Bright living room after a full house deep clean',
   },
   {
+    id: 'bathroom-sanitize',
+    title: 'Bathroom deep clean',
+    location: 'Lafayette, IN',
+    service: 'Bathrooms',
+    summary:
+      'Double vanity, granite counters, fixtures polished, and mirrors streak-free — part of a full-home deep clean.',
+    image: '/portfolio/bathroom-double-vanity.png',
+    imageAlt: 'Spotless bathroom with double vanity, granite counters, and polished fixtures after a Gold Level deep clean',
+  },
+  {
     id: 'kitchen-refresh',
     title: 'Kitchen deep clean',
     location: 'West Lafayette, IN',
@@ -45,17 +55,6 @@ export const portfolioProjects: PortfolioProject[] = [
     image:
       'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?auto=format&fit=crop&w=900&q=80',
     imageAlt: 'Clean apartment living space with natural light',
-  },
-  {
-    id: 'bathroom-sanitize',
-    title: 'Bathroom sanitizing',
-    location: 'Lafayette, IN',
-    service: 'Bathrooms',
-    summary:
-      'Showers, tile grout, fixtures polished, and mirrors streak-free, part of a recurring deep clean package.',
-    image:
-      'https://images.unsplash.com/photo-1620626011761-996317b8d101?auto=format&fit=crop&w=900&q=80',
-    imageAlt: 'Spotless bathroom with white tile and bright lighting',
   },
   {
     id: 'move-out-clean',

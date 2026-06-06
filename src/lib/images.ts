@@ -6,6 +6,10 @@ export function unsplashSrc(url: string, width: number, quality = 70) {
 }
 
 export function portfolioSrcSet(url: string) {
+  if (!url.includes('images.unsplash.com')) {
+    return { src: url, srcSet: `${url} 900w` }
+  }
+
   const mobile = unsplashSrc(url, 400, 68)
   const tablet = unsplashSrc(url, 640, 72)
   const desktop = unsplashSrc(url, 900, 75)
