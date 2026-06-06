@@ -4,14 +4,16 @@ import { Link } from 'react-router-dom'
 import { GoldStreakConnectors } from '@/components/ui/gold-streak-line'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { homeProcessSteps, homeTrustStats, OWNER_NAME } from '../data/siteContent'
-import { portfolioProjects } from '../data/portfolio'
+import { isBeforeAfterProject, portfolioProjects } from '../data/portfolio'
 import { portfolioSrcSet } from '../lib/images'
+import { BeforeAfterCard } from './BeforeAfterCard'
 import { FadeContent } from './reactbits/FadeContent'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
 
 const trustIcons = [Calendar, ShieldCheck, Home, Star] as const
-const featuredWork = portfolioProjects.slice(0, 3)
+const beforeAfterFeatured = portfolioProjects.find(isBeforeAfterProject)
+const featuredWork = portfolioProjects.filter((p) => !isBeforeAfterProject(p)).slice(0, 3)
 
 const mobileScrollRow =
   '-mx-[max(1rem,env(safe-area-inset-left))] flex snap-x snap-mandatory gap-3 overflow-x-auto overscroll-x-contain px-[max(1rem,env(safe-area-inset-left))] pb-1 [scrollbar-width:none] sm:mx-0 sm:grid sm:snap-none sm:overflow-visible sm:px-0 sm:pb-0 [&::-webkit-scrollbar]:hidden'
@@ -126,7 +128,15 @@ export function HomeSections() {
             </FadeContent>
           </div>
 
-          <div className={`mt-5 sm:mt-8 ${mobileScrollRow} sm:grid-cols-2 lg:grid-cols-3 lg:gap-5`}>
+          {beforeAfterFeatured ? (
+            <FadeContent delay={0.04} className="mt-5 sm:mt-8">
+              <BeforeAfterCard project={beforeAfterFeatured} />
+            </FadeContent>
+          ) : null}
+
+          <div
+            className={`${beforeAfterFeatured ? 'mt-8' : 'mt-5 sm:mt-8'} ${mobileScrollRow} sm:grid-cols-2 lg:grid-cols-3 lg:gap-5`}
+          >
             {featuredWork.map((project, i) => {
               const img = portfolioSrcSet(project.image)
               return (

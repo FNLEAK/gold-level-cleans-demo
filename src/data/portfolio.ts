@@ -6,13 +6,35 @@ export type PortfolioProject = {
   summary: string
   image: string
   imageAlt: string
+  beforeImage?: string
+  afterImage?: string
+  beforeAlt?: string
+  afterAlt?: string
+}
+
+export function isBeforeAfterProject(project: PortfolioProject) {
+  return Boolean(project.beforeImage && project.afterImage)
 }
 
 export const portfolioIntro =
-  'Real homes we have deep cleaned across the area: kitchens, bathrooms, bedrooms, and full-house resets. Photos are from completed Gold Level jobs (client details omitted for privacy).'
+  'Real homes we have deep cleaned across the area. Drag the before & after sliders to see the Gold Level difference — client details omitted for privacy.'
 
 /** Replace `image` paths with your own photos in `public/portfolio/`. */
 export const portfolioProjects: PortfolioProject[] = [
+  {
+    id: 'noblesville-kitchen',
+    title: 'Kitchen & dining deep clean',
+    location: 'Noblesville, IN',
+    service: 'Before & after',
+    summary:
+      'Full kitchen and dining reset — clutter cleared, floors mopped, surfaces wiped, and the whole space brought back to move-in ready condition.',
+    image: '/portfolio/noblesville-kitchen-after.png',
+    imageAlt: 'Clean kitchen and dining area after a Gold Level deep clean in Noblesville',
+    beforeImage: '/portfolio/noblesville-kitchen-before.png',
+    afterImage: '/portfolio/noblesville-kitchen-after.png',
+    beforeAlt: 'Cluttered kitchen and dining area before deep cleaning in Noblesville',
+    afterAlt: 'Clean kitchen and dining area after a Gold Level deep clean in Noblesville',
+  },
   {
     id: 'full-house-lafayette',
     title: 'Full house deep clean',

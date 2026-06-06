@@ -1,9 +1,16 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import { MapPin, Sparkles, X } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { portfolioIntro, portfolioProjects, type PortfolioProject } from '../data/portfolio'
+import {
+  isBeforeAfterProject,
+  portfolioIntro,
+  portfolioProjects,
+  type PortfolioProject,
+} from '../data/portfolio'
 import { portfolioSrcSet } from '../lib/images'
+import { BeforeAfterCard } from './BeforeAfterCard'
+import { BeforeAfterSlider } from './BeforeAfterSlider'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { FadeContent } from './reactbits/FadeContent'
 import { PageHeader } from './PageHeader'
@@ -15,6 +22,8 @@ function PortfolioCard({
   project: PortfolioProject
   onOpen: (project: PortfolioProject) => void
 }) {
+  if (isBeforeAfterProject(project)) return null
+
   const img = portfolioSrcSet(project.image)
 
   return (
@@ -103,15 +112,24 @@ function PortfolioLightbox({
           <X className="h-5 w-5" />
         </button>
         <div className="max-h-[40dvh] overflow-hidden sm:max-h-[50vh]">
-          <img
-            src={img.src}
-            srcSet={img.srcSet}
-            sizes="100vw"
-            alt={project.imageAlt}
-            loading="eager"
-            decoding="async"
-            className="h-full w-full object-cover"
-          />
+          {isBeforeAfterProject(project) ? (
+            <BeforeAfterSlider
+              beforeSrc={project.beforeImage!}
+              afterSrc={project.afterImage!}
+              beforeAlt={project.beforeAlt ?? `${project.title} before`}
+              afterAlt={project.afterAlt ?? project.imageAlt}
+            />
+          ) : (
+            <img
+              src={img.src}
+              srcSet={img.srcSet}
+              sizes="100vw"
+              alt={project.imageAlt}
+              loading="eager"
+              decoding="async"
+              className="h-full w-full object-cover"
+            />
+          )}
         </div>
         <div className="p-5 sm:p-7">
           <p className="text-xs font-semibold uppercase tracking-wide text-gold-400">
@@ -141,6 +159,15 @@ function PortfolioLightbox({
 export function PortfolioSection() {
   const [active, setActive] = useState<PortfolioProject | null>(null)
 
+  const beforeAfterProjects = useMemo(
+    () => portfolioProjects.filter(isBeforeAfterProject),
+    [],
+  )
+  const galleryProjects = useMemo(
+    () => portfolioProjects.filter((p) => !isBeforeAfterProject(p)),
+    [],
+  )
+
   return (
     <section className="px-[max(1rem,env(safe-area-inset-left))] py-12 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-20">
       <div className="mx-auto max-w-6xl">
@@ -150,13 +177,32 @@ export function PortfolioSection() {
           subtitle={portfolioIntro}
         />
 
-        <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
-          {portfolioProjects.map((project, i) => (
-            <FadeContent key={project.id} delay={i * 0.05}>
-              <PortfolioCard project={project} onOpen={setActive} />
+        {beforeAfterProjects.length > 0 ? (
+          <div className="mt-12 space-y-8">
+            <FadeContent>
+              <p className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-400">
+                Before & after
+              </p>
             </FadeContent>
-          ))}
-        </div>
+            {beforeAfterProjects.map((project, i) => (
+              <FadeContent key={project.id} delay={i * 0.06}>
+                <BeforeAfterCard project={project} />
+              </FadeContent>
+            ))}
+          </div>
+        ) : null}
+
+        {galleryProjects.length > 0 ? (
+          <div
+            className={`grid gap-5 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6 ${beforeAfterProjects.length > 0 ? 'mt-14' : 'mt-12'}`}
+          >
+            {galleryProjects.map((project, i) => (
+              <FadeContent key={project.id} delay={i * 0.05}>
+                <PortfolioCard project={project} onOpen={setActive} />
+              </FadeContent>
+            ))}
+          </div>
+        ) : null}
 
         <FadeContent delay={0.2} className="mt-14 text-center">
           <p className="text-sm text-fog">
