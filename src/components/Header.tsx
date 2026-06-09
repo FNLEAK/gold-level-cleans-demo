@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Shield, Sparkles, User, X } from 'lucide-react'
+import { Shield, Star, User, X } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 import { GoldStreakLine } from '@/components/ui/gold-streak-line'
 import { mainNavLinks } from '../data/navLinks'
@@ -80,7 +80,7 @@ function MobileMenuToggle({
       {open ? (
         <X className="relative h-5 w-5 transition-transform duration-300" />
       ) : (
-        <Sparkles
+        <Star
           className="relative h-[1.35rem] w-[1.35rem] animate-menu-sparkle-twinkle"
           strokeWidth={1.75}
           aria-hidden
