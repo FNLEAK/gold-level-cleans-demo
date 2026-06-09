@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { GoldStreakConnectors } from '@/components/ui/gold-streak-line'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { homeProcessSteps, homeTrustStats, OWNER_NAME } from '../data/siteContent'
+import { AnimatedStatValue } from './AnimatedStatValue'
 import { FadeContent } from './reactbits/FadeContent'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
@@ -31,7 +32,12 @@ export function HomeSections() {
                     <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" aria-hidden />
                   </span>
                   <p className="font-display text-xl font-bold leading-none text-gold-400 sm:text-2xl lg:text-4xl">
-                    {stat.value}
+                    <AnimatedStatValue
+                      value={stat.value}
+                      countTo={'countTo' in stat ? stat.countTo : undefined}
+                      suffix={'suffix' in stat ? stat.suffix : undefined}
+                      delay={i * 0.08}
+                    />
                   </p>
                 </div>
                 <p className="mt-2 text-[11px] font-semibold leading-snug text-white sm:text-sm lg:mt-2">

@@ -1,17 +1,29 @@
 import { type FormEvent, type ReactNode, useState } from 'react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { ArrowUpRight, Mail, MapPin, Phone, Send } from 'lucide-react'
-import { BRAND_TAGLINE, BUSINESS_NAME, EMAIL, footerCopyright, PHONE_DISPLAY, PHONE_TEL, SERVICE_COUNTIES } from '../data/siteContent'
+import {
+  BRAND_TAGLINE,
+  BUSINESS_NAME,
+  EMAIL,
+  footerCopyright,
+  PHONE_DISPLAY,
+  PHONE_TEL,
+  SERVICE_COUNTIES,
+} from '../data/siteContent'
 import { mainNavLinks } from '../data/navLinks'
 
 const footerLink =
-  'flex min-h-11 items-center text-[13px] text-fog transition hover:text-gold-400 [touch-action:manipulation]'
+  'text-[13px] text-fog transition hover:text-gold-400 [touch-action:manipulation]'
+
+const footerLinkMobile = `${footerLink} block py-1.5`
+
+const footerLinkDesktop = `${footerLink} flex min-h-11 items-center`
 
 const quickLinks = mainNavLinks.filter((l) => l.to !== '/contact')
 
 function FooterHeading({ children }: { children: ReactNode }) {
   return (
-    <h3 className="font-display text-base font-semibold tracking-tight text-white sm:text-lg">
+    <h3 className="font-display text-sm font-semibold tracking-tight text-white sm:text-lg">
       {children}
     </h3>
   )
@@ -23,11 +35,35 @@ function SocialIcon({ label, children, href }: { label: string; children: ReactN
       href={href}
       target="_blank"
       rel="noopener noreferrer"
-      className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-void-200/60 text-fog transition hover:border-gold-400/30 hover:text-gold-400"
+      className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-void-200/60 text-fog transition hover:border-gold-400/30 hover:text-gold-400 sm:h-10 sm:w-10"
       aria-label={label}
     >
       {children}
     </a>
+  )
+}
+
+function SocialLinks() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <SocialIcon label="Facebook" href="https://facebook.com">
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.022 4.388 11.01 10.125 11.908v-8.42H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796v8.42C19.612 23.083 24 18.095 24 12.073z" />
+        </svg>
+      </SocialIcon>
+      <SocialIcon label="Instagram" href="https://instagram.com">
+        <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+          <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
+        </svg>
+      </SocialIcon>
+      <a
+        href={`mailto:${EMAIL}`}
+        className="flex h-9 w-9 items-center justify-center rounded-full border border-white/10 bg-void-200/60 text-fog transition hover:border-gold-400/30 hover:text-gold-400 sm:h-10 sm:w-10"
+        aria-label="Email"
+      >
+        <Mail className="h-4 w-4" aria-hidden />
+      </a>
+    </div>
   )
 }
 
@@ -70,13 +106,70 @@ function NewsletterSignup() {
   )
 }
 
+function QuickLinksNav({ mobile }: { mobile?: boolean }) {
+  const linkClass = mobile ? footerLinkMobile : footerLinkDesktop
+
+  return (
+    <nav className={mobile ? 'grid grid-cols-2 gap-x-4' : 'mt-4 flex flex-col gap-2.5'}>
+      {quickLinks.map((l) => (
+        <NavLink
+          key={l.to}
+          to={l.to}
+          end={l.to === '/'}
+          className={({ isActive }) => `${linkClass}${isActive ? ' font-medium text-gold-400' : ''}`}
+        >
+          {l.label}
+        </NavLink>
+      ))}
+      <Link to="/contact" className={linkClass}>
+        Contact us
+      </Link>
+    </nav>
+  )
+}
+
 export function Footer() {
   return (
     <footer className="relative mt-auto border-t border-white/[0.08] bg-void-100/90 backdrop-blur-sm">
-      <div className="mx-auto max-w-6xl px-[max(1rem,env(safe-area-inset-left))] py-12 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-14">
-        <div className="grid gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-8 xl:gap-12">
-          {/* Stay connected */}
-          <div className="sm:col-span-2 lg:col-span-1">
+      <div className="mx-auto max-w-6xl px-[max(1rem,env(safe-area-inset-left))] py-8 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-14">
+        {/* Mobile — compact */}
+        <div className="md:hidden">
+          <p className="font-display text-lg font-semibold text-white">{BUSINESS_NAME}</p>
+          <p className="mt-1 text-xs text-fog">{BRAND_TAGLINE}</p>
+
+          <div className="mt-4 grid grid-cols-2 gap-2.5">
+            <a
+              href={`tel:${PHONE_TEL}`}
+              className="inline-flex min-h-10 items-center justify-center gap-2 rounded-full border border-gold-400/45 bg-gold-muted/40 text-sm font-semibold text-gold-400 [touch-action:manipulation]"
+            >
+              <Phone className="h-4 w-4" aria-hidden />
+              Call
+            </a>
+            <Link
+              to="/book"
+              className="btn-primary !min-h-10 !px-4 !py-2 !text-sm"
+            >
+              Book now
+            </Link>
+          </div>
+
+          <div className="mt-6 border-t border-white/[0.06] pt-5">
+            <QuickLinksNav mobile />
+          </div>
+
+          <div className="mt-5 flex items-center justify-between gap-4 border-t border-white/[0.06] pt-5">
+            <SocialLinks />
+            <Link to="/contact" className="shrink-0 text-xs font-semibold text-gold-400 hover:text-gold-300">
+              Contact →
+            </Link>
+          </div>
+
+          <p className="mt-5 text-center text-[10px] leading-relaxed text-fog/70">{footerCopyright}</p>
+        </div>
+
+        {/* Desktop — full */}
+        <div className="hidden md:grid md:grid-cols-2 md:gap-10 lg:grid-cols-4 lg:gap-8 xl:gap-12">
+          <div className="lg:col-span-1">
             <FooterHeading>Stay connected</FooterHeading>
             <p className="mt-3 max-w-xs text-sm leading-relaxed text-fog">
               Get booking reminders, seasonal deep clean tips, and exclusive offers from{' '}
@@ -86,29 +179,11 @@ export function Footer() {
             <p className="mt-3 text-[11px] text-fog/70">{BRAND_TAGLINE}</p>
           </div>
 
-          {/* Quick links */}
           <div>
             <FooterHeading>Quick links</FooterHeading>
-            <nav className="mt-4 flex flex-col gap-2.5">
-              {quickLinks.map((l) => (
-                <NavLink
-                  key={l.to}
-                  to={l.to}
-                  end={l.to === '/'}
-                  className={({ isActive }) =>
-                    `${footerLink}${isActive ? ' font-medium text-gold-400' : ''}`
-                  }
-                >
-                  {l.label}
-                </NavLink>
-              ))}
-              <Link to="/contact" className={footerLink}>
-                Contact us
-              </Link>
-            </nav>
+            <QuickLinksNav />
           </div>
 
-          {/* Contact */}
           <div>
             <FooterHeading>Contact us</FooterHeading>
             <ul className="mt-4 space-y-3 text-sm text-fog">
@@ -142,31 +217,14 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Follow + account */}
           <div>
             <FooterHeading>Follow us</FooterHeading>
             <p className="mt-3 text-sm text-fog">Connect for updates and before/after photos.</p>
-            <div className="mt-4 flex flex-wrap gap-2.5">
-              <SocialIcon label="Facebook" href="https://facebook.com">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.022 4.388 11.01 10.125 11.908v-8.42H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796v8.42C19.612 23.083 24 18.095 24 12.073z" />
-                </svg>
-              </SocialIcon>
-              <SocialIcon label="Instagram" href="https://instagram.com">
-                <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
-                  <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z" />
-                </svg>
-              </SocialIcon>
-              <a
-                href={`mailto:${EMAIL}`}
-                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/10 bg-void-200/60 text-fog transition hover:border-gold-400/30 hover:text-gold-400"
-                aria-label="Email"
-              >
-                <Mail className="h-4 w-4" aria-hidden />
-              </a>
+            <div className="mt-4">
+              <SocialLinks />
             </div>
             <div className="mt-6 space-y-2 border-t border-white/[0.06] pt-5">
-              <Link to="/sign-in" className={`block ${footerLink}`}>
+              <Link to="/sign-in" className={`block ${footerLinkDesktop}`}>
                 Customer sign in
               </Link>
               <Link
@@ -180,17 +238,16 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Bottom bar */}
-        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-center sm:flex-row sm:text-left">
+        <div className="mt-12 hidden flex-col items-center justify-between gap-4 border-t border-white/[0.06] pt-6 text-center sm:flex-row sm:text-left md:flex">
           <p className="text-xs text-fog/80">{footerCopyright}</p>
           <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs">
-            <Link to="/contact" className={footerLink}>
+            <Link to="/contact" className={footerLinkDesktop}>
               Privacy &amp; quotes
             </Link>
-            <Link to="/services" className={footerLink}>
+            <Link to="/services" className={footerLinkDesktop}>
               Service terms
             </Link>
-            <Link to="/contact" className={footerLink}>
+            <Link to="/contact" className={footerLinkDesktop}>
               Cookie preferences
             </Link>
           </div>

@@ -1,5 +1,6 @@
 export const BUSINESS_NAME = 'Gold Level Cleans'
 export const BRAND_TAGLINE = 'Clean spaces. High standards.'
+export const SITE_URL = 'https://goldlevel.pro'
 export const OWNER_NAME = 'Mykala Ashbaugh'
 export const OWNER_HEADSHOT = '/mykala-ashbaugh.jpg'
 export const OWNER_HEADSHOT_ALT = 'Mykala Ashbaugh, owner of Gold Level Cleans'
@@ -11,6 +12,16 @@ export const EMAIL = 'MykalaAshbaugh353@gmail.com'
 export const SERVICE_COUNTIES = 'Anderson, Muncie, Indianapolis, Alexandria & more'
 
 export const heroTagline = 'Premium deep cleaning, every corner, every time.'
+
+/** Update profileUrl when your Google Business review link is ready. */
+export const googleReviews = {
+  rating: 5,
+  /** Set when you have a public count, e.g. 24 */
+  reviewCount: null as number | null,
+  profileUrl: '',
+  label: 'Google Reviews',
+  headline: 'Trusted by local homeowners',
+} as const
 
 export const heroHighlights = [
   {
@@ -49,10 +60,10 @@ export const homeProcessSteps = [
 ] as const
 
 export const homeTrustStats = [
-  { value: '7', label: 'Jobs max / week', sub: 'Quality over quantity' },
-  { value: '100%', label: 'Owner-operated', sub: 'Mykala on every job' },
+  { value: '7', countTo: 7, suffix: '', label: 'Jobs max / week', sub: 'Quality over quantity' },
+  { value: '100%', countTo: 100, suffix: '%', label: 'Owner-operated', sub: 'Mykala on every job' },
   { value: 'Custom', label: 'Quotes per home', sub: 'Sized to your space' },
-  { value: '5★', label: 'Gold standard', sub: 'Clean spaces. High standards.' },
+  { value: '5★', countTo: 5, suffix: '★', label: 'Gold standard', sub: 'Clean spaces. High standards.' },
 ] as const
 
 export const aboutParagraphs = [
@@ -127,6 +138,61 @@ export const servicesPricingNote =
 
 export const pricesSectionHeading = 'Starting points & quotes'
 
+export const bookingServiceTypes = [
+  {
+    id: 'standard',
+    label: 'Standard Cleaning',
+    hint: 'Regular maintenance for occupied homes',
+    requiresFrequency: true,
+  },
+  {
+    id: 'deep',
+    label: 'Deep Cleaning',
+    hint: 'Detailed top-to-bottom reset',
+    requiresFrequency: false,
+  },
+  {
+    id: 'move',
+    label: 'Move In / Move Out Cleaning',
+    hint: 'Empty-home or transition clean',
+    requiresFrequency: false,
+  },
+  {
+    id: 'rental',
+    label: 'Rental & Turnover Cleaning',
+    hint: 'Guest-ready for rentals & Airbnbs',
+    requiresFrequency: false,
+  },
+] as const
+
+export type BookingServiceId = (typeof bookingServiceTypes)[number]['id']
+
+export const standardCleaningFrequencies = [
+  { value: 'one-time', label: 'One-time', hint: 'Single visit' },
+  { value: 'weekly', label: 'Weekly', hint: 'Same day each week' },
+  { value: 'bi-weekly', label: 'Bi-weekly', hint: 'Every two weeks' },
+  { value: 'monthly', label: 'Monthly', hint: 'Once per month' },
+] as const
+
+export type StandardCleaningFrequency = (typeof standardCleaningFrequencies)[number]['value']
+
+export function isStandardCleaningService(serviceId: string) {
+  return serviceId === 'standard'
+}
+
+export function formatBookingServiceLabel(
+  serviceId: string,
+  frequency?: string,
+): string {
+  const service = bookingServiceTypes.find((s) => s.id === serviceId)
+  if (!service) return serviceId
+  if (service.requiresFrequency && frequency) {
+    const freq = standardCleaningFrequencies.find((f) => f.value === frequency)
+    return `${service.label} (${freq?.label ?? frequency})`
+  }
+  return service.label
+}
+
 export const pricingTiers = [
   {
     id: '1br',
@@ -166,7 +232,7 @@ export const pricingTiers = [
 ] as const
 
 export const pricingNote =
-  'Every home is different — layout, condition, and add-ons all affect the final price. Book online or contact us for a personalized quote. Optional: share your budget on the booking form so we can respond faster.'
+  'Every home is different — layout, condition, and add-ons all affect the final price. Book online or contact us for a personalized quote. Share your budget on the booking form so we can respond faster.'
 
 export const promoBanner = {
   headline: 'First Cleaning: $50 Off Any Service Over $250',

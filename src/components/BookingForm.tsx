@@ -16,8 +16,9 @@ import {
   START_TIME_OPTIONS,
   submitBookingRequest,
 } from '../lib/supabase-bookings'
-import { pricingTiers } from '../data/siteContent'
+import { formatBookingServiceLabel, isStandardCleaningService } from '../data/siteContent'
 import { useAuth } from '../context/AuthContext'
+import { BookingServiceFields } from './BookingServiceFields'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { FadeContent } from './reactbits/FadeContent'
 import { SelectField } from './SelectField'
@@ -26,9 +27,7 @@ const inputWrap =
   'relative rounded-2xl border border-white/10 bg-void-200/60 shadow-sm transition focus-within:border-gold-400/45 focus-within:ring-2 focus-within:ring-gold-400/15'
 
 const inputInner =
-  'w-full rounded-2xl bg-transparent px-4 pb-3.5 pt-3 font-sans text-base text-white outline-none placeholder:text-fog/80'
-
-const serviceOptions = pricingTiers.filter((t) => !t.addon).map((t) => t.name)
+  'w-full rounded-2xl bg-transparent px-4 py-3.5 font-sans text-base leading-normal text-white outline-none placeholder:text-fog/80'
 
 function formatDateOption(iso: string) {
   const d = new Date(`${iso}T12:00:00`)
@@ -46,7 +45,8 @@ export function BookingForm() {
   const { user } = useAuth()
   const dates = upcomingDateOptions()
   const [selectedDate, setSelectedDate] = useState(dates[0] ?? '')
-  const [selectedService, setSelectedService] = useState<string>(serviceOptions[0] ?? '')
+  const [selectedServiceId, setSelectedServiceId] = useState('standard')
+  const [selectedFrequency, setSelectedFrequency] = useState('one-time')
   const [selectedTime, setSelectedTime] = useState<string>(START_TIME_OPTIONS[1]?.value ?? '09:00')
   const [availability, setAvailability] = useState<WeekAvailability | null>(null)
   const [loadingAvail, setLoadingAvail] = useState(true)
@@ -61,11 +61,6 @@ export function BookingForm() {
         return { value: d, label, hint }
       }),
     [dates],
-  )
-
-  const serviceSelectOptions = useMemo(
-    () => serviceOptions.map((s) => ({ value: s, label: s })),
-    [],
   )
 
   const loadAvailability = useCallback(async (date: string) => {
@@ -106,6 +101,10 @@ export function BookingForm() {
       const phone = String(form.get('phone') ?? '')
       const notes = String(form.get('notes') ?? '')
       const budget = String(form.get('budget') ?? '').trim()
+      const service = formatBookingServiceLabel(
+        selectedServiceId,
+        isStandardCleaningService(selectedServiceId) ? selectedFrequency : undefined,
+      )
 
       if (isSupabaseConfigured()) {
         await submitBookingRequest({
@@ -114,9 +113,9 @@ export function BookingForm() {
           customer_phone: phone,
           scheduled_date: selectedDate,
           start_time: selectedTime,
-          service: selectedService,
+          service,
           notes,
-          customer_budget: budget || undefined,
+          customer_budget: budget,
           customer_id: user?.id,
         })
         setSuccess({ date: selectedDate })
@@ -127,7 +126,7 @@ export function BookingForm() {
           email,
           phone,
           date: selectedDate,
-          service: selectedService,
+          service,
           notes: notesWithBudget,
         })
         setSuccess({ date: result.booking.date, remaining: result.remaining })
@@ -239,15 +238,11 @@ export function BookingForm() {
           />
 
           <div className="mt-5">
-            <SelectField
-              id="book-service"
-              label="Service"
-              name="service"
-              value={selectedService}
-              onChange={setSelectedService}
-              options={serviceSelectOptions}
-              required
-              placeholder="Choose a service"
+            <BookingServiceFields
+              serviceId={selectedServiceId}
+              frequency={selectedFrequency}
+              onServiceChange={setSelectedServiceId}
+              onFrequencyChange={setSelectedFrequency}
             />
           </div>
 
@@ -274,7 +269,7 @@ export function BookingForm() {
                 required
                 defaultValue={user?.name ?? ''}
                 key={`name-${user?.id ?? 'guest'}`}
-                className={`${inputInner} min-h-12`}
+                className={`${inputInner} min-h-[3.25rem]`}
               />
             </div>
           </div>
@@ -293,7 +288,7 @@ export function BookingForm() {
                   required
                   defaultValue={user?.email ?? ''}
                   key={`email-${user?.id ?? 'guest'}`}
-                  className={`${inputInner} min-h-12`}
+                  className={`${inputInner} min-h-[3.25rem]`}
                 />
               </div>
             </div>
@@ -307,7 +302,8 @@ export function BookingForm() {
                   id="book-phone"
                   name="phone"
                   type="tel"
-                  className={`${inputInner} min-h-12`}
+                  required
+                  className={`${inputInner} min-h-[3.25rem]`}
                 />
               </div>
             </div>
@@ -316,7 +312,7 @@ export function BookingForm() {
           <div className="mt-5">
             <label htmlFor="book-budget" className="flex items-center gap-2 text-xs font-semibold tracking-wide text-fog">
               <Wallet className="h-3.5 w-3.5" aria-hidden />
-              Budget range <span className="font-normal text-fog/70">(optional)</span>
+              Budget range
             </label>
             <div className={`${inputWrap} mt-2`}>
               <input
@@ -324,8 +320,8 @@ export function BookingForm() {
                 name="budget"
                 type="text"
                 inputMode="text"
-                placeholder="e.g. $200–250 or around $300"
-                className={`${inputInner} min-h-12`}
+                required
+                className={`${inputInner} min-h-[3.25rem]`}
               />
             </div>
             <p className="mt-2 text-xs leading-relaxed text-fog/80">

@@ -7,8 +7,8 @@ export function BookPage() {
       <div className="mx-auto max-w-6xl">
         <PageHeader
           eyebrow="Schedule"
-          title="Book your deep clean"
-          subtitle="Pick a date and we’ll reserve your spot. We take up to 7 jobs per week."
+          title="Book your cleaning"
+          subtitle="Choose your service type and preferred date. We take up to 7 jobs per week and confirm your quote before we accept."
           className="mb-12"
         />
         <BookingForm />

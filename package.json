@@ -9,6 +9,7 @@
     "dev:server": "node --watch server/index.js",
     "build": "node ./node_modules/typescript/lib/tsc.js -b && node ./node_modules/vite/bin/vite.js build",
     "optimize-images": "node scripts/optimize-images.mjs",
+    "generate-qr": "node scripts/generate-qr.mjs",
     "start": "node server/index.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js .",
     "preview": "node ./node_modules/vite/bin/vite.js preview"
@@ -35,6 +36,7 @@
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.4.0",
+    "qrcode": "^1.5.4",
     "sharp": "^0.34.5",
     "tailwindcss": "^4.2.2",
     "typescript": "~5.9.3",

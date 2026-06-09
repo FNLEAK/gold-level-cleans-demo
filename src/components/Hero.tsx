@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { heroHighlights, heroTagline, OWNER_NAME, PHONE_DISPLAY, PHONE_TEL } from '../data/siteContent'
 import { BrandLogo } from './BrandLogo'
+import { GoogleReviewsBadge } from './GoogleReviewsBadge'
 import { ShinyText } from './reactbits/ShinyText'
 
 const container = {
@@ -88,10 +89,19 @@ export function Hero() {
         </motion.div>
 
         <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, duration: 0.45, ease: easeOut }}
+          className="mx-auto mt-7 flex w-full max-w-xl justify-center px-1 sm:mt-8"
+        >
+          <GoogleReviewsBadge variant="hero" />
+        </motion.div>
+
+        <motion.div
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2, duration: 0.45, ease: easeOut }}
-          className="mx-auto mt-6 max-w-5xl sm:mt-10"
+          transition={{ delay: 0.22, duration: 0.45, ease: easeOut }}
+          className="mx-auto mt-7 max-w-5xl sm:mt-9"
         >
           <div className={mobileScrollRow}>
             {heroHighlights.map((h, i) => {

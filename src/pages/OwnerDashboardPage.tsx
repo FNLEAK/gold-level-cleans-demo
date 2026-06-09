@@ -19,7 +19,8 @@ import { useCallback, useEffect, useMemo, useState, type FormEvent } from 'react
 import { Link } from 'react-router-dom'
 import { OwnerCalendar } from '../components/OwnerCalendar'
 import { SelectField } from '../components/SelectField'
-import { pricingTiers } from '../data/siteContent'
+import { BookingServiceFields } from '../components/BookingServiceFields'
+import { formatBookingServiceLabel, isStandardCleaningService } from '../data/siteContent'
 import { useAuth } from '../context/AuthContext'
 import {
   cancelBooking,
@@ -43,8 +44,6 @@ import {
 } from '../lib/supabase-bookings'
 
 type Tab = 'upcoming' | 'week' | 'all'
-
-const serviceOptions = pricingTiers.filter((t) => !t.addon).map((t) => t.name)
 
 function initials(name?: string) {
   const parts = name?.trim().split(/\s+/) ?? []
@@ -257,18 +256,14 @@ function AddScheduleForm({
 }) {
   const dates = upcomingDateOptions(56)
   const [selectedDate, setSelectedDate] = useState(dates[0] ?? '')
-  const [selectedService, setSelectedService] = useState<string>(serviceOptions[0] ?? '')
+  const [selectedServiceId, setSelectedServiceId] = useState('standard')
+  const [selectedFrequency, setSelectedFrequency] = useState('one-time')
   const [submitting, setSubmitting] = useState(false)
   const [success, setSuccess] = useState(false)
 
   const dateOptions = useMemo(
     () => dates.map((d) => ({ value: d, ...formatDateOption(d) })),
     [dates],
-  )
-
-  const serviceSelectOptions = useMemo(
-    () => serviceOptions.map((s) => ({ value: s, label: s })),
-    [],
   )
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
@@ -278,6 +273,11 @@ function AddScheduleForm({
     onError('')
     setSuccess(false)
 
+    const service = formatBookingServiceLabel(
+      selectedServiceId,
+      isStandardCleaningService(selectedServiceId) ? selectedFrequency : undefined,
+    )
+
     try {
       if (isSupabaseConfigured()) {
         await createOwnerBookingSupabase({
@@ -285,7 +285,7 @@ function AddScheduleForm({
           customer_email: String(form.get('email') ?? ''),
           customer_phone: String(form.get('phone') ?? ''),
           scheduled_date: selectedDate,
-          service: selectedService,
+          service,
           notes: String(form.get('notes') ?? ''),
         })
       } else {
@@ -294,7 +294,7 @@ function AddScheduleForm({
           email: String(form.get('email') ?? ''),
           phone: String(form.get('phone') ?? ''),
           date: selectedDate,
-          service: selectedService,
+          service,
           notes: String(form.get('notes') ?? ''),
         })
       }
@@ -387,14 +387,16 @@ function AddScheduleForm({
               options={dateOptions}
               required
             />
-            <SelectField
-              id="owner-schedule-service"
-              label="Service type"
-              value={selectedService}
-              onChange={setSelectedService}
-              options={serviceSelectOptions}
-              required
-            />
+            <div className="sm:col-span-2">
+              <BookingServiceFields
+                serviceFieldId="owner-schedule-service"
+                frequencyFieldId="owner-schedule-frequency"
+                serviceId={selectedServiceId}
+                frequency={selectedFrequency}
+                onServiceChange={setSelectedServiceId}
+                onFrequencyChange={setSelectedFrequency}
+              />
+            </div>
           </div>
 
           <label className="block">

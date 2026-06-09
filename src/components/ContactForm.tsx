@@ -21,7 +21,7 @@ const inputWrap =
   'relative rounded-2xl border border-white/10 bg-void-200/60 shadow-sm transition focus-within:border-gold-400/45 focus-within:ring-2 focus-within:ring-gold-400/15'
 
 const inputInner =
-  'w-full rounded-2xl bg-transparent px-4 pb-3.5 pt-3 font-sans text-base text-white outline-none placeholder:text-fog/80'
+  'w-full rounded-2xl bg-transparent px-4 py-3.5 font-sans text-base leading-normal text-white outline-none placeholder:text-fog/80'
 
 function decodeParam(v: string | null) {
   if (!v) return ''
@@ -128,7 +128,7 @@ export function ContactForm() {
                       required
                       placeholder="Jane Doe"
                       defaultValue={preset.fullname}
-                      className={`${inputInner} min-h-12`}
+                      className={`${inputInner} min-h-[3.25rem]`}
                     />
                   </div>
                 </div>
@@ -150,7 +150,7 @@ export function ContactForm() {
                       required
                       placeholder="you@example.com"
                       defaultValue={preset.email}
-                      className={`${inputInner} min-h-12`}
+                      className={`${inputInner} min-h-[3.25rem]`}
                     />
                   </div>
                 </div>

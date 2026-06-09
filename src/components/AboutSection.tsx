@@ -28,6 +28,7 @@ import {
 } from '../data/siteContent'
 import { FadeContent } from './reactbits/FadeContent'
 import { ShinyText } from './reactbits/ShinyText'
+import { AnimatedStatValue } from './AnimatedStatValue'
 
 const easeOut = [0.22, 1, 0.36, 1] as const
 
@@ -118,7 +119,7 @@ export function AboutSection() {
             </div>
 
             <div className="text-center lg:text-left">
-              <h1 className="font-display text-2xl font-semibold tracking-tight text-white sm:text-4xl md:text-5xl">
+              <h1 className="font-display text-2xl font-semibold leading-snug tracking-tight text-white sm:text-4xl md:text-5xl">
                 Meet{' '}
                 <ShinyText text={OWNER_NAME} className="font-display font-semibold" speed={6} />
               </h1>
@@ -145,7 +146,14 @@ export function AboutSection() {
           {homeTrustStats.map((stat, i) => (
             <FadeContent key={stat.label} delay={i * 0.04}>
               <div className="rounded-2xl border border-white/[0.07] bg-void-200/45 p-5 text-center backdrop-blur-sm transition hover:border-gold-400/25 sm:p-6">
-                <p className="font-display text-2xl font-bold text-gold-400 sm:text-3xl">{stat.value}</p>
+                <p className="font-display text-2xl font-bold text-gold-400 sm:text-3xl">
+                  <AnimatedStatValue
+                    value={stat.value}
+                    countTo={'countTo' in stat ? stat.countTo : undefined}
+                    suffix={'suffix' in stat ? stat.suffix : undefined}
+                    delay={i * 0.08}
+                  />
+                </p>
                 <p className="mt-1.5 text-sm font-semibold text-white">{stat.label}</p>
                 <p className="mt-1 text-xs text-fog">{stat.sub}</p>
               </div>
@@ -154,10 +162,10 @@ export function AboutSection() {
         </motion.div>
 
         {/* Story + care panel */}
-        <motion.div variants={item} className="mt-8 grid gap-6 lg:grid-cols-5 lg:items-stretch lg:gap-6">
-          <div className="lg:flex lg:col-span-3">
-            <GlowBorder className="w-full lg:flex lg:h-full lg:flex-1 lg:flex-col">
-              <div className="flex flex-col rounded-2xl bg-void-200/55 p-5 backdrop-blur-sm sm:p-7 lg:h-full lg:flex-1">
+        <motion.div variants={item} className="mt-8 grid gap-6 lg:grid-cols-5 lg:items-start lg:gap-6">
+          <div className="lg:col-span-3">
+            <GlowBorder className="w-full">
+              <div className="flex flex-col rounded-2xl bg-void-200/55 p-5 backdrop-blur-sm sm:p-7">
                 <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-400">
                   Our story
                 </p>
@@ -169,7 +177,7 @@ export function AboutSection() {
                     <p key={p.slice(0, 48)}>{p}</p>
                   ))}
                 </div>
-                <div className="mt-6 flex flex-col gap-3 pt-2 sm:flex-row sm:flex-wrap lg:mt-auto lg:pt-6">
+                <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
                   <Link to="/book" className="btn-primary group !min-h-11 !px-6 !text-sm">
                     Book a deep clean
                     <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
@@ -182,9 +190,9 @@ export function AboutSection() {
             </GlowBorder>
           </div>
 
-          <div className="lg:flex lg:col-span-2">
-            <GlowBorder className="w-full lg:flex lg:h-full lg:flex-1 lg:flex-col">
-              <div className="flex flex-col rounded-2xl bg-gradient-to-br from-gold-muted/25 via-void-200/70 to-void-200/50 p-5 backdrop-blur-sm sm:p-7 lg:h-full lg:flex-1">
+          <div className="lg:col-span-2">
+            <GlowBorder className="w-full">
+              <div className="flex flex-col rounded-2xl bg-gradient-to-br from-gold-muted/25 via-void-200/70 to-void-200/50 p-5 backdrop-blur-sm sm:p-7">
                 <h3 className="font-display text-xl font-semibold text-white sm:text-2xl">
                   {aboutYouHeading}
                 </h3>
@@ -204,7 +212,7 @@ export function AboutSection() {
                     )
                   })}
                 </ul>
-                <div className="mt-6 border-t border-white/[0.08] pt-5 lg:mt-auto">
+                <div className="mt-8">
                   <p className="font-display text-base font-semibold text-white sm:text-lg">
                     {callTodayHeading}
                   </p>

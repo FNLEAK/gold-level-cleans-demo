@@ -3,6 +3,7 @@ import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, Shield, User, X } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
+import { GoldStreakLine } from '@/components/ui/gold-streak-line'
 import { mainNavLinks } from '../data/navLinks'
 import { useAuth } from '../context/AuthContext'
 
@@ -65,8 +66,9 @@ export function Header() {
       initial={{ y: -12, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-      className="border-b border-white/[0.08] bg-[#050505]/95 pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] backdrop-blur-md md:px-8 md:pt-[max(0.75rem,env(safe-area-inset-top))]"
+      className="relative bg-[#050505]/95 backdrop-blur-md"
     >
+      <div className="relative border-b border-white/[0.08] pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))] pt-[max(0.5rem,env(safe-area-inset-top))] md:px-8 md:pt-[max(0.75rem,env(safe-area-inset-top))]">
       <div className="mx-auto max-w-6xl py-1.5 md:py-2.5">
         {/* Desktop — logo + nav centered */}
         <div className="hidden items-center justify-center gap-5 lg:flex xl:gap-7">
@@ -103,6 +105,8 @@ export function Header() {
             {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
+      </div>
+      <GoldStreakLine wide className="absolute inset-x-0 bottom-0 z-10" duration={4.5} />
       </div>
 
       <AnimatePresence>

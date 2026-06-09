@@ -77,7 +77,7 @@ export function SelectField({
             : 'border-white/10 hover:border-white/20'
         }`}
       >
-        <span className="min-w-0 flex-1 truncate">
+        <span className="min-w-0 flex-1 leading-normal">
           {selected ? (
             <span className="flex flex-col gap-0.5 sm:flex-row sm:items-baseline sm:gap-2">
               <span className="font-medium text-mist">{selected.label}</span>
@@ -102,13 +102,13 @@ export function SelectField({
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -4, scale: 0.98 }}
             transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-0 right-0 z-[120] mt-2 origin-top"
+            className="absolute left-0 right-0 z-[120] mt-2 origin-top overflow-hidden rounded-2xl border border-gold-400/25 bg-[#0c0c0c]/95 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.85)] backdrop-blur-xl"
           >
             <ul
               id={listboxId}
               role="listbox"
               aria-labelledby={id}
-              className="select-scroll max-h-[min(16rem,50vh)] overflow-y-auto overscroll-contain rounded-2xl border border-gold-400/25 bg-[#0c0c0c]/95 p-1.5 shadow-[0_20px_50px_-12px_rgba(0,0,0,0.85)] backdrop-blur-xl"
+              className="select-scroll max-h-[min(16rem,50vh)] overflow-y-auto overscroll-contain p-1.5"
             >
               {options.map((option) => {
                 const isSelected = option.value === value

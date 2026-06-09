@@ -6,6 +6,8 @@ type GoldStreakLineProps = {
   delay?: number
   /** Narrow gap segment between cards — tighter glow, clipped sweep */
   compact?: boolean
+  /** Wider traveling highlight (e.g. full-width nav border) */
+  wide?: boolean
 }
 
 export function GoldStreakLine({
@@ -13,7 +15,14 @@ export function GoldStreakLine({
   duration = 3.5,
   delay = 0,
   compact = false,
+  wide = false,
 }: GoldStreakLineProps) {
+  const streakWidth = compact
+    ? 'w-full'
+    : wide
+      ? 'w-[min(18rem,42%)]'
+      : 'w-[min(7rem,18%)]'
+
   return (
     <div
       className={`pointer-events-none absolute h-px overflow-hidden ${className}`}
@@ -22,9 +31,7 @@ export function GoldStreakLine({
       <div className="relative h-px w-full overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/[0.07] to-transparent" />
         <div
-          className={`absolute top-0 h-full animate-gold-streak-sweep ${
-            compact ? 'w-full' : 'w-[min(7rem,18%)]'
-          }`}
+          className={`absolute top-0 h-full animate-gold-streak-sweep ${streakWidth}`}
           style={{
             animationDuration: `${duration}s`,
             animationDelay: `${delay}s`,

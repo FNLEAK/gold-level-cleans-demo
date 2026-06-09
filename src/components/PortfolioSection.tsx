@@ -4,16 +4,15 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import {
   isBeforeAfterProject,
-  portfolioIntro,
   portfolioProjects,
   type PortfolioProject,
 } from '../data/portfolio'
 import { portfolioSrcSet } from '../lib/images'
 import { BeforeAfterCard } from './BeforeAfterCard'
 import { BeforeAfterSlider } from './BeforeAfterSlider'
+import { PortfolioTitleCard } from './PortfolioTitleCard'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { FadeContent } from './reactbits/FadeContent'
-import { PageHeader } from './PageHeader'
 
 function PortfolioCard({
   project,
@@ -171,22 +170,10 @@ export function PortfolioSection() {
   return (
     <section className="px-[max(1rem,env(safe-area-inset-left))] py-12 pr-[max(1rem,env(safe-area-inset-right))] md:px-8 md:py-20">
       <div className="mx-auto max-w-6xl">
-        <PageHeader
-          eyebrow="Our Work"
-          title="Homes we have cleaned"
-          subtitle={portfolioIntro}
-        />
+        <PortfolioTitleCard />
 
         {beforeAfterProjects.length > 0 ? (
-          <div className="mt-12 space-y-8">
-            <FadeContent>
-              <p className="text-center text-[11px] font-semibold uppercase tracking-[0.2em] text-gold-400">
-                Before &amp; after
-              </p>
-              <p className="mt-2 text-center text-sm text-fog">
-                Pull each way on the slider to compare photos
-              </p>
-            </FadeContent>
+          <div className="mt-14 space-y-10 sm:mt-16 sm:space-y-12">
             {beforeAfterProjects.map((project, i) => (
               <FadeContent key={project.id} delay={i * 0.06}>
                 <BeforeAfterCard project={project} />
