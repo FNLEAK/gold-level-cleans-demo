@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, Shield, User, X } from 'lucide-react'
+import { Shield, Sparkles, User, X } from 'lucide-react'
 import { BrandLogo } from './BrandLogo'
 import { GoldStreakLine } from '@/components/ui/gold-streak-line'
 import { mainNavLinks } from '../data/navLinks'
@@ -45,6 +45,48 @@ function AccountLink() {
     <Link to="/sign-in" className={textNavClass(false)}>
       Sign in
     </Link>
+  )
+}
+
+function MobileMenuToggle({
+  open,
+  onToggle,
+}: {
+  open: boolean
+  onToggle: () => void
+}) {
+  return (
+    <button
+      type="button"
+      className={`group relative inline-flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-xl border transition-all duration-300 [touch-action:manipulation] ${
+        open
+          ? 'animate-none border-gold-400/45 bg-gold-muted text-gold-300 shadow-[0_0_22px_-4px_rgba(212,175,55,0.6)]'
+          : 'animate-menu-btn-glow border-gold-400/25 bg-gradient-to-br from-white/[0.07] via-void-200/80 to-gold-muted/50 text-gold-400 hover:border-gold-400/40 hover:text-gold-300'
+      }`}
+      aria-expanded={open}
+      aria-label={open ? 'Close menu' : 'Open menu'}
+      onClick={onToggle}
+    >
+      <span
+        className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_50%_30%,rgba(252,246,186,0.12),transparent_65%)] opacity-80"
+        aria-hidden
+      />
+      <span
+        className={`pointer-events-none absolute -right-0.5 -top-0.5 h-1.5 w-1.5 rounded-full bg-gold-300/90 transition-opacity duration-300 ${
+          open ? 'opacity-0' : 'animate-menu-sparkle-twinkle opacity-100'
+        }`}
+        aria-hidden
+      />
+      {open ? (
+        <X className="relative h-5 w-5 transition-transform duration-300" />
+      ) : (
+        <Sparkles
+          className="relative h-[1.35rem] w-[1.35rem] animate-menu-sparkle-twinkle"
+          strokeWidth={1.75}
+          aria-hidden
+        />
+      )}
+    </button>
   )
 }
 
@@ -95,15 +137,7 @@ export function Header() {
           <Link to="/" className="shrink-0 [touch-action:manipulation]">
             <BrandLogo />
           </Link>
-          <button
-            type="button"
-            className="inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-white/70 transition hover:text-white"
-            aria-expanded={open}
-            aria-label={open ? 'Close menu' : 'Open menu'}
-            onClick={() => setOpen((v) => !v)}
-          >
-            {open ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
+          <MobileMenuToggle open={open} onToggle={() => setOpen((v) => !v)} />
         </div>
       </div>
       <GoldStreakLine wide className="absolute inset-x-0 bottom-0 z-10" duration={4.5} />
@@ -115,7 +149,7 @@ export function Header() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="overflow-hidden border-t border-white/[0.06] lg:hidden"
+            className="overflow-hidden border-t border-gold-400/15 bg-gradient-to-b from-gold-muted/20 to-transparent lg:hidden"
           >
             <nav className="mx-auto flex max-w-6xl max-h-[min(70dvh,28rem)] flex-col gap-0.5 overflow-y-auto overscroll-contain px-1 py-2 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
               {mainNavLinks.map((l) => (
