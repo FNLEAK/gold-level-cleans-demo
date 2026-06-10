@@ -1,5 +1,6 @@
 import { Star } from 'lucide-react'
 import type { ReactNode } from 'react'
+import { Link } from 'react-router-dom'
 import { googleReviews } from '../data/siteContent'
 
 function GoogleMark({ className = 'h-5 w-5' }: { className?: string }) {
@@ -48,30 +49,32 @@ function StarRating({ rating, size = 'md' }: { rating: number; size?: 'md' | 'lg
 type GoogleReviewsBadgeProps = {
   className?: string
   variant?: 'default' | 'hero'
+  /** When true, badge links to /reviews (homepage only). */
+  linkToReviews?: boolean
 }
 
 function ReviewShell({
   children,
   className,
-  profileUrl,
   ariaLabel,
+  href,
+  asLink,
 }: {
   children: ReactNode
   className: string
-  profileUrl: string
   ariaLabel: string
+  href?: string
+  asLink: boolean
 }) {
-  if (profileUrl) {
+  if (asLink && href) {
     return (
-      <a
-        href={profileUrl}
-        target="_blank"
-        rel="noopener noreferrer"
-        className={`${className} [touch-action:manipulation]`}
+      <Link
+        to={href}
+        className={`${className} [touch-action:manipulation] transition hover:brightness-[1.03]`}
         aria-label={ariaLabel}
       >
         {children}
-      </a>
+      </Link>
     )
   }
 
@@ -82,55 +85,75 @@ function ReviewShell({
   )
 }
 
-export function GoogleReviewsBadge({ className = '', variant = 'default' }: GoogleReviewsBadgeProps) {
-  const { rating, reviewCount, profileUrl, label, headline } = googleReviews
+function HeroBadgeContent({ rating, label, countText, headline }: {
+  rating: number
+  label: string
+  countText: string
+  headline: string
+}) {
+  return (
+    <>
+      <div
+        className="pointer-events-none absolute -inset-3 rounded-3xl bg-gold-400/[0.07] opacity-80 blur-2xl transition group-hover:opacity-100"
+        aria-hidden
+      />
+      <div className="relative overflow-hidden rounded-2xl border border-gold-400/25 bg-gradient-to-br from-void-200/90 via-void-200/70 to-void-200/90 px-5 py-4 shadow-[0_12px_40px_-16px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-md sm:px-6 sm:py-5">
+        <div
+          className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent"
+          aria-hidden
+        />
+        <div className="flex items-center gap-4 sm:gap-5">
+          <div className="flex shrink-0 flex-col items-center gap-1.5">
+            <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-[0_4px_14px_-4px_rgba(0,0,0,0.35)] ring-1 ring-black/5 sm:h-[3.25rem] sm:w-[3.25rem]">
+              <GoogleMark className="h-6 w-6 sm:h-7 sm:w-7" />
+            </span>
+            <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-fog/90">Google</span>
+          </div>
+          <div className="h-12 w-px shrink-0 bg-gradient-to-b from-transparent via-white/15 to-transparent sm:h-14" aria-hidden />
+          <div className="min-w-0 flex-1 text-left">
+            <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
+              <span className="font-display text-3xl font-bold leading-none tracking-tight text-white sm:text-[2rem]">
+                {rating.toFixed(1)}
+              </span>
+              <StarRating rating={rating} size="lg" />
+            </div>
+            <p className="mt-2 text-sm font-semibold text-mist sm:text-[15px]">{label}</p>
+            <p className="mt-0.5 text-xs text-fog sm:text-[13px]">
+              <span className="font-medium text-gold-400">{countText}</span>
+              {headline ? ` · ${headline}` : ''}
+            </p>
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+export function GoogleReviewsBadge({
+  className = '',
+  variant = 'default',
+  linkToReviews = false,
+}: GoogleReviewsBadgeProps) {
+  const { rating, reviewCount, label, headline } = googleReviews
   const ratingLabel = `${rating.toFixed(1)} out of 5 stars on Google`
   const countText =
     reviewCount != null && reviewCount > 0 ? `${reviewCount}+ reviews` : '5-star rated'
+  const linkLabel = `${ratingLabel}. View our ${label} page.`
 
   if (variant === 'hero') {
     return (
       <ReviewShell
-        profileUrl={profileUrl}
-        ariaLabel={`${ratingLabel}. Read our ${label}.`}
+        asLink={linkToReviews}
+        href={linkToReviews ? '/reviews' : undefined}
+        ariaLabel={linkToReviews ? linkLabel : ratingLabel}
         className={`group relative w-full max-w-md sm:max-w-xl ${className}`.trim()}
       >
-        <div
-          className="pointer-events-none absolute -inset-3 rounded-3xl bg-gold-400/[0.07] opacity-80 blur-2xl transition group-hover:opacity-100"
-          aria-hidden
+        <HeroBadgeContent
+          rating={rating}
+          label={label}
+          countText={countText}
+          headline={headline}
         />
-        <div className="relative overflow-hidden rounded-2xl border border-gold-400/25 bg-gradient-to-br from-void-200/90 via-void-200/70 to-void-200/90 px-5 py-4 shadow-[0_12px_40px_-16px_rgba(0,0,0,0.65),inset_0_1px_0_rgba(255,255,255,0.07)] backdrop-blur-md sm:px-6 sm:py-5">
-          <div
-            className="pointer-events-none absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-gold-400/40 to-transparent"
-            aria-hidden
-          />
-          <div className="flex items-center gap-4 sm:gap-5">
-            <div className="flex shrink-0 flex-col items-center gap-1.5">
-              <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-white shadow-[0_4px_14px_-4px_rgba(0,0,0,0.35)] ring-1 ring-black/5 sm:h-[3.25rem] sm:w-[3.25rem]">
-                <GoogleMark className="h-6 w-6 sm:h-7 sm:w-7" />
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-[0.14em] text-fog/90">
-                Google
-              </span>
-            </div>
-
-            <div className="h-12 w-px shrink-0 bg-gradient-to-b from-transparent via-white/15 to-transparent sm:h-14" aria-hidden />
-
-            <div className="min-w-0 flex-1 text-left">
-              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1">
-                <span className="font-display text-3xl font-bold leading-none tracking-tight text-white sm:text-[2rem]">
-                  {rating.toFixed(1)}
-                </span>
-                <StarRating rating={rating} size="lg" />
-              </div>
-              <p className="mt-2 text-sm font-semibold text-mist sm:text-[15px]">{label}</p>
-              <p className="mt-0.5 text-xs text-fog sm:text-[13px]">
-                <span className="font-medium text-gold-400">{countText}</span>
-                {headline ? ` · ${headline}` : ''}
-              </p>
-            </div>
-          </div>
-        </div>
       </ReviewShell>
     )
   }
@@ -142,8 +165,9 @@ export function GoogleReviewsBadge({ className = '', variant = 'default' }: Goog
 
   return (
     <ReviewShell
-      profileUrl={profileUrl}
-      ariaLabel={ratingLabel}
+      asLink={linkToReviews}
+      href={linkToReviews ? '/reviews' : undefined}
+      ariaLabel={linkToReviews ? linkLabel : ratingLabel}
       className={`inline-flex items-center gap-3 rounded-2xl border border-white/[0.08] bg-void-200/35 px-4 py-2.5 shadow-[inset_0_1px_0_rgba(255,255,255,0.04)] backdrop-blur-sm transition hover:border-gold-400/25 hover:bg-void-200/50 ${className}`.trim()}
     >
       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/[0.04]">

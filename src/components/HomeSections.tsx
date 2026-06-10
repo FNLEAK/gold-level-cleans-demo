@@ -1,7 +1,6 @@
 import { motion } from 'framer-motion'
 import { ArrowRight, Calendar, ShieldCheck, Sparkles, Star, Home } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { GoldStreakConnectors } from '@/components/ui/gold-streak-line'
 import { GlowBorder } from '@/components/ui/spotlight-card'
 import { homeProcessSteps, homeTrustStats, OWNER_NAME } from '../data/siteContent'
 import { AnimatedStatValue } from './AnimatedStatValue'
@@ -70,7 +69,6 @@ export function HomeSections() {
           </FadeContent>
 
           <div className="relative mt-6 sm:mt-10 md:mt-12">
-            <GoldStreakConnectors className="top-12 z-[1] hidden md:grid" />
             <div className={`${mobileScrollRow} md:grid md:grid-cols-3 md:gap-8`}>
               {homeProcessSteps.map((step, i) => (
                 <FadeContent

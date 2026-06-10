@@ -3,6 +3,7 @@ export const mainNavLinks = [
   { to: '/about', label: 'About Us' },
   { to: '/services', label: 'Services' },
   { to: '/portfolio', label: 'Our Work' },
+  { to: '/reviews', label: 'Reviews' },
   { to: '/book', label: 'Book Now' },
   { to: '/contact', label: 'Contact Us' },
 ] as const

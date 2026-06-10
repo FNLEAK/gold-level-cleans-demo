@@ -1,6 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion'
 import {
-  Bot,
   MessageCircle,
   Send,
   Sparkles,
@@ -100,7 +99,7 @@ export function AiChatWidget() {
   const finishBooking = useCallback(
     (complete: BookingDraft) => {
       const body = [
-        'Booking request (via AI assistant)',
+        'Booking request (via GLC Assistant)',
         `Name: ${complete.name}`,
         `Email: ${complete.email}`,
         `Preferred time: ${complete.time}`,
@@ -195,7 +194,7 @@ export function AiChatWidget() {
             id={panelId}
             role="dialog"
             aria-modal="true"
-            aria-label="AI assistant chat"
+            aria-label="GLC Assistant chat"
             initial={{ opacity: 0, y: 16, scale: 0.96 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.98 }}
@@ -204,12 +203,17 @@ export function AiChatWidget() {
           >
             <div className="flex items-start justify-between gap-2 border-b border-gold-400/20 px-4 py-3">
               <div className="flex min-w-0 items-center gap-2.5">
-                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-gold-400 text-void shadow-md shadow-black/40">
-                  <Bot className="h-5 w-5" aria-hidden />
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl border border-gold-400/25 bg-gradient-to-br from-void-100 to-void-200 p-1 shadow-md shadow-black/30 ring-1 ring-gold-400/10">
+                  <img
+                    src="/logo-96.webp"
+                    alt=""
+                    className="h-[1.65rem] w-[1.65rem] object-contain object-top"
+                    aria-hidden
+                  />
                 </span>
                 <div className="min-w-0">
                   <p className="truncate font-display text-sm font-semibold text-white">
-                    AI Assistant
+                    GLC Assistant
                   </p>
                   <p className="truncate text-[10px] font-semibold uppercase tracking-[0.18em] text-gold-400/80">
                     {BUSINESS_NAME}
@@ -284,6 +288,18 @@ export function AiChatWidget() {
                 type="button"
                 className="min-h-10 shrink-0 rounded-full border border-white/10 bg-void-200/60 px-3.5 py-2 text-left text-xs font-medium text-mist transition hover:bg-void-300 [touch-action:manipulation]"
                 onClick={() => {
+                  pushUser('Reviews')
+                  pushBot('Opening Reviews. See what homeowners say about our deep cleans.')
+                  setOpen(false)
+                  navigate('/reviews')
+                }}
+              >
+                Reviews
+              </button>
+              <button
+                type="button"
+                className="min-h-10 shrink-0 rounded-full border border-white/10 bg-void-200/60 px-3.5 py-2 text-left text-xs font-medium text-mist transition hover:bg-void-300 [touch-action:manipulation]"
+                onClick={() => {
                   pushUser('About')
                   pushBot('Opening About. Our story and philosophy are on that page.')
                   setOpen(false)
@@ -321,7 +337,7 @@ export function AiChatWidget() {
                 }}
                 placeholder="Ask anything or type “book”…"
                 className="min-h-11 min-w-0 flex-1 rounded-xl border border-white/10 bg-void-200/60 px-3 py-2.5 text-base text-white outline-none placeholder:text-fog/80 focus:border-gold-400/45 focus:ring-1 focus:ring-gold-400/20"
-                aria-label="Message to assistant"
+                aria-label="Message to GLC Assistant"
               />
               <button
                 type="button"
@@ -342,7 +358,7 @@ export function AiChatWidget() {
         onClick={() => setOpen((v) => !v)}
         aria-expanded={open}
         aria-controls={panelId}
-        aria-label="Open AI assistant"
+        aria-label="Open GLC Assistant"
         whileHover={{ scale: 1.06 }}
         whileTap={{ scale: 0.96 }}
         className="pointer-events-auto flex h-12 w-12 items-center justify-center rounded-full border border-gold-400/30 bg-void-200/95 text-gold-400 shadow-lg shadow-black/45 backdrop-blur-md transition-[border-color,box-shadow] duration-300 hover:border-gold-400/55 hover:shadow-[0_0_28px_-6px_rgba(212,175,55,0.5)] [touch-action:manipulation] sm:h-14 sm:w-14"

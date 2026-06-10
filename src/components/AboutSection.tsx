@@ -252,7 +252,7 @@ export function AboutSection() {
                 icon: Home,
               },
               {
-                title: 'Counties we serve',
+                title: 'Areas we serve',
                 body: `Proudly serving ${SERVICE_COUNTIES}. Contact us if you are nearby and not sure we cover your area.`,
                 icon: MapPin,
               },

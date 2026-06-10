@@ -7,6 +7,7 @@ import { HomePage } from './pages/HomePage'
 import { AboutPage } from './pages/AboutPage'
 import { ServicesPage } from './pages/ServicesPage'
 import { PortfolioPage } from './pages/PortfolioPage'
+import { ReviewsPage } from './pages/ReviewsPage'
 import { ContactPage } from './pages/ContactPage'
 import { BookPage } from './pages/BookPage'
 import { SignInPage } from './pages/SignInPage'
@@ -24,6 +25,7 @@ function App() {
         <Route path="/about" element={<AboutPage />} />
         <Route path="/services" element={<ServicesPage />} />
         <Route path="/portfolio" element={<PortfolioPage />} />
+        <Route path="/reviews" element={<ReviewsPage />} />
         <Route path="/price-list" element={<Navigate to="/services" replace />} />
         <Route path="/book" element={<BookPage />} />
         <Route path="/contact" element={<ContactPage />} />

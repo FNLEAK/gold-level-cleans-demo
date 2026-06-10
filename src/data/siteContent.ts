@@ -8,8 +8,9 @@ export const OWNER_HEADSHOT_ALT = 'Mykala Ashbaugh, owner of Gold Level Cleans'
 export const PHONE_DISPLAY = '(765) 639-7981'
 export const PHONE_TEL = '+17656397981'
 export const EMAIL = 'MykalaAshbaugh353@gmail.com'
+export const FACEBOOK_URL = 'https://www.facebook.com/share/192mC27p73/?mibextid=wwXIfr'
 
-export const SERVICE_COUNTIES = 'Anderson, Muncie, Indianapolis, Alexandria & more'
+export const SERVICE_COUNTIES = 'Madison County and surrounding areas'
 
 export const heroTagline = 'Premium deep cleaning, every corner, every time.'
 

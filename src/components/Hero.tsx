@@ -94,7 +94,7 @@ export function Hero() {
           transition={{ delay: 0.15, duration: 0.45, ease: easeOut }}
           className="mx-auto mt-7 flex w-full max-w-xl justify-center px-1 sm:mt-8"
         >
-          <GoogleReviewsBadge variant="hero" />
+          <GoogleReviewsBadge variant="hero" linkToReviews />
         </motion.div>
 
         <motion.div

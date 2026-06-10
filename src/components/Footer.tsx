@@ -5,6 +5,7 @@ import {
   BRAND_TAGLINE,
   BUSINESS_NAME,
   EMAIL,
+  FACEBOOK_URL,
   footerCopyright,
   PHONE_DISPLAY,
   PHONE_TEL,
@@ -46,7 +47,7 @@ function SocialIcon({ label, children, href }: { label: string; children: ReactN
 function SocialLinks() {
   return (
     <div className="flex flex-wrap gap-2">
-      <SocialIcon label="Facebook" href="https://facebook.com">
+      <SocialIcon label="Facebook" href={FACEBOOK_URL}>
         <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
           <path d="M24 12.073C24 5.405 18.627 0 12 0S0 5.405 0 12.073c0 6.022 4.388 11.01 10.125 11.908v-8.42H7.078v-3.49h3.047V9.413c0-3.025 1.792-4.697 4.533-4.697 1.312 0 2.686.236 2.686.236v2.97H15.83c-1.491 0-1.956.93-1.956 1.886v2.268h3.328l-.532 3.49h-2.796v8.42C19.612 23.083 24 18.095 24 12.073z" />
         </svg>
@@ -191,7 +192,7 @@ export function Footer() {
                 <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold-400/80" aria-hidden />
                 <span>
                   <span className="block text-xs font-semibold uppercase tracking-wider text-gold-400/90">
-                    Counties served
+                    Areas served
                   </span>
                   <span className="mt-0.5 block">{SERVICE_COUNTIES}</span>
                 </span>

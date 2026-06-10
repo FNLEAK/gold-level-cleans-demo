@@ -1,4 +1,5 @@
 import { ArrowRight, Sparkles } from 'lucide-react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Link } from 'react-router-dom'
 import { promoBanner } from '../data/siteContent'
 
@@ -35,24 +36,68 @@ function MarqueeItem({ kind, text }: (typeof marqueeItems)[number]) {
   return <span className="text-[13px] text-white/75 sm:text-sm">{text}</span>
 }
 
-function MarqueeTrack() {
-  const loop = [...marqueeItems, ...marqueeItems]
-
+function MarqueeChunk({ items, prefix }: { items: typeof marqueeItems; prefix: string }) {
   return (
-    <div className="promo-marquee-track flex w-max items-center gap-8 pr-8 sm:gap-10">
-      {loop.map((item, i) => (
-        <span key={`${item.kind}-${i}`} className="inline-flex shrink-0 items-center">
+    <>
+      {items.map((item, i) => (
+        <span key={`${prefix}-${item.kind}-${i}`} className="inline-flex shrink-0 items-center">
           <MarqueeItem {...item} />
           <span className="ml-8 text-gold-500/45 sm:ml-10" aria-hidden>
             ✦
           </span>
         </span>
       ))}
-    </div>
+    </>
+  )
+}
+
+function MarqueeTrack({ containerRef }: { containerRef: RefObject<HTMLDivElement | null> }) {
+  const measureRef = useRef<HTMLDivElement>(null)
+  const [halfRepeats, setHalfRepeats] = useState(4)
+
+  useEffect(() => {
+    const container = containerRef.current
+    const measure = measureRef.current
+    if (!container || !measure) return
+
+    const update = () => {
+      const containerWidth = container.clientWidth
+      const segmentWidth = measure.scrollWidth
+      if (!segmentWidth) return
+      setHalfRepeats(Math.max(2, Math.ceil(containerWidth / segmentWidth) + 1))
+    }
+
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(container)
+    ro.observe(measure)
+    return () => ro.disconnect()
+  }, [containerRef])
+
+  const half = Array.from({ length: halfRepeats }, (_, r) => (
+    <MarqueeChunk key={`seg-${r}`} items={marqueeItems} prefix={`r${r}`} />
+  ))
+
+  return (
+    <>
+      <div
+        ref={measureRef}
+        className="pointer-events-none absolute left-0 top-0 flex w-max items-center gap-8 opacity-0 sm:gap-10"
+        aria-hidden
+      >
+        <MarqueeChunk items={marqueeItems} prefix="measure" />
+      </div>
+      <div className="promo-marquee-track flex w-max items-center gap-8 pr-8 sm:gap-10">
+        {half}
+        {half}
+      </div>
+    </>
   )
 }
 
 export function PromotionalBanner() {
+  const marqueeRef = useRef<HTMLDivElement>(null)
+
   return (
     <aside
       aria-label="First cleaning promotion"
@@ -86,8 +131,8 @@ export function PromotionalBanner() {
       </div>
 
       <div className="promo-banner-scroll relative flex items-center pl-[max(0.75rem,env(safe-area-inset-left))] pr-[max(0.75rem,env(safe-area-inset-right))]">
-        <div className="promo-marquee min-w-0 flex-1 overflow-hidden py-2.5 sm:py-3">
-          <MarqueeTrack />
+        <div ref={marqueeRef} className="promo-marquee relative min-w-0 flex-1 overflow-hidden py-2.5 sm:py-3">
+          <MarqueeTrack containerRef={marqueeRef} />
         </div>
 
         <Link

@@ -11,6 +11,10 @@ export function getBotReply(input: string): string {
     return 'Our Garage Deep Clean add-on can be added to any deep clean package. It includes sweeping, surface wiping, and a clutter-friendly reset. Contact us for a quote.'
   }
 
+  if (/\b(review|reviews|rating|ratings|testimonial|testimonials|google review)\b/.test(q)) {
+    return 'Read what clients say on our Reviews page — 5-star rated deep cleans across Central Indiana.'
+  }
+
   if (/\b(portfolio|gallery|photos|before|after|past work|examples)\b/.test(q)) {
     return 'See homes we have cleaned on the Our Work page. Tap a project for details and photos from completed deep cleans.'
   }
